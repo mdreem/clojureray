@@ -33,8 +33,9 @@
   (Math/sqrt (squared-length v1)))
 
 (defn dot
-  [[x1 x2 x3 w1] [y1 y2 y3 w2]]
-  (+ (* x1 y1) (* x2 y2) (* x3 y3) (* w1 w2)))
+  [v1 v2]
+  (reduce + (mapv * v1 v2))
+  )
 
 (defn cross
   [[x1 x2 x3 _] [y1 y2 y3 _]]
