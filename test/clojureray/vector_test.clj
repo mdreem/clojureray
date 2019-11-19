@@ -49,3 +49,15 @@
 (deftest length-sqrt-14
   (testing "Test length of a vector of length sqrt(14)"
     (is (= (vector/float= (vector/length [1 -2 3]) 3.741657) true))))
+
+(deftest dot-product
+  (testing "Test dot product"
+    (is (= (vector/dot [1 2 3] [2 3 4]) 20))))
+
+(deftest cross-product-v1
+  (testing "Test cross product v1"
+    (is (= (vector/cross [1 2 3] [2 3 4]) [-1 2 -1]))))
+
+(deftest cross-product-v2
+  (testing "Test cross product v2"
+    (is (= (vector/cross [2 3 4] [1 2 3]) [1 -2 1]))))
