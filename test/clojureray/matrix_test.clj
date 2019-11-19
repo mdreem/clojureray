@@ -17,3 +17,8 @@
                                                                           [44 54 114 108]
                                                                           [40 58 110 102]
                                                                           [16 26 46 42]]))))
+
+(deftest multiply-matrix-with-id
+  (testing "Test multiplying a matrix with id"
+    (is (= (matrix/multiply matrix/id-4 [[1 2 3 4] [5 6 7 8] [9 8 7 6] [5 4 3 2]])
+           [[1 2 3 4] [5 6 7 8] [9 8 7 6] [5 4 3 2]]))))

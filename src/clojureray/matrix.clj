@@ -1,6 +1,12 @@
 (ns clojureray.matrix
   (:require [clojureray.vector :as vector]))
 
+(def id-4
+  [[1 0 0 0]
+   [0 1 0 0]
+   [0 0 1 0]
+   [0 0 0 1]])
+
 (defn transpose
   [matrix]
   (let [column-count (count (first matrix))]
