@@ -20,11 +20,11 @@
 
 (deftest addition
   (testing "Test addition"
-    (is (= (vector/add [1 2 3] [4 5 6]) [5 7 9]))))
+    (is (= (vector/add [1 2 3 7] [4 5 6 8]) [5 7 9 15]))))
 
 (deftest subtraction
   (testing "Test subtraction"
-    (is (= (vector/subtract [1 2 3] [4 5 6]) [-3 -3 -3]))))
+    (is (= (vector/subtract [1 2 3 7] [4 5 6 8]) [-3 -3 -3 -1]))))
 
 (deftest negation
   (testing "Test negation"
@@ -32,32 +32,32 @@
 
 (deftest negation
   (testing "Test negation"
-    (is (= (vector/negate [1 -2 3]) [-1 2 -3]))))
+    (is (= (vector/negate [1 -2 3 -4]) [-1 2 -3 4]))))
 
 (deftest scalar-multiplication
   (testing "Test scalar multiplication"
-    (is (= (vector/scalar-multiplication 0.5 [1 -2 3]) [0.5 -1.0 1.5]))))
+    (is (= (vector/scalar-multiplication 0.5 [1 -2 3 -4]) [0.5 -1.0 1.5 -2.0]))))
 
 (deftest vector-multiplication
   (testing "Test vector multiplication"
-    (is (= (vector/squared-length [1 2 3]) 14))))
+    (is (= (vector/squared-length [1 2 3 4]) 30))))
 
 (deftest length-1
   (testing "Test length of a vector of length 1"
-    (is (= (vector/length [1 0 0]) 1.0))))
+    (is (= (vector/length [1 0 0 0]) 1.0))))
 
-(deftest length-sqrt-14
-  (testing "Test length of a vector of length sqrt(14)"
-    (is (= (vector/float= (vector/length [1 -2 3]) 3.741657) true))))
+(deftest length-sqrt-30
+  (testing "Test length of a vector of length sqrt(30)"
+    (is (= (vector/float= (vector/length [1 -2 3 -4]) 5.477225) true))))
 
 (deftest dot-product
   (testing "Test dot product"
-    (is (= (vector/dot [1 2 3] [2 3 4]) 20))))
+    (is (= (vector/dot [1 2 3 5] [2 3 4 6]) 50))))
 
 (deftest cross-product-v1
   (testing "Test cross product v1"
-    (is (= (vector/cross [1 2 3] [2 3 4]) [-1 2 -1]))))
+    (is (= (vector/cross [1 2 3 100] [2 3 4 100]) [-1 2 -1 0]))))
 
 (deftest cross-product-v2
   (testing "Test cross product v2"
-    (is (= (vector/cross [2 3 4] [1 2 3]) [1 -2 1]))))
+    (is (= (vector/cross [2 3 4 100] [1 2 3 100]) [1 -2 1 0]))))
