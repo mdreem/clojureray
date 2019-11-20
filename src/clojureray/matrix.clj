@@ -17,7 +17,7 @@
 (defn- row-times-matrix
   [row matrix]
   (let [matrix-transposed (transpose matrix)]
-    (let [column-count (count row)]
+    (let [column-count (count matrix-transposed)]
       (mapv (fn [column-index] (vector/dot row (get matrix-transposed column-index)))
             (range column-count))
       )))
@@ -25,6 +25,11 @@
 (defn multiply
   [matrix1 matrix2]
   (mapv (fn [row] (row-times-matrix row matrix2)) matrix1)
+  )
+
+(defn multiply-vector
+  [matrix v]
+  (multiply matrix (transpose [v]))
   )
 
 (defn- drop-element
