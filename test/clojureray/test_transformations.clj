@@ -108,3 +108,27 @@
           p [2 3 4 1]]
       (is (aeq (matrix/multiply-vector s p) [[2.0] [3.0] [7.0] [1.0]]))))
   )
+
+(deftest multiply-by-chained-transformation-matrices
+  (let [a (transformations/rotation_x (/ Math/PI 2))
+        b (transformations/scaling 5 5 5)
+        c (transformations/translation 10 5 7)
+        p [1 0 1 1]
+        p2 (matrix/multiply-vector a p)
+        p3 (matrix/multiply-vector b (first (matrix/transpose p2)))
+        p4 (matrix/multiply-vector c (first (matrix/transpose p3)))
+        combined (matrix/multiply c (matrix/multiply b a))
+        ]
+    (testing "Test apply rotation first"
+      (is (aeq p2 [[1.0] [-1.0] [0.0] [1.0]])))
+
+    (testing "Test apply scaling second"
+      (is (aeq p3 [[5.0] [-5.0] [0.0] [1.0]])))
+
+    (testing "Test apply translation third"
+      (is (aeq p4 [[15.0] [0.0] [7.0] [1.0]])))
+
+    (testing "Test apply combined"
+      (is (aeq (matrix/multiply-vector combined p) [[15.0] [0.0] [7.0] [1.0]])))
+    )
+  )
