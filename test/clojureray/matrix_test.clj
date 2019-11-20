@@ -22,3 +22,13 @@
   (testing "Test multiplying a matrix with id"
     (is (= (matrix/multiply matrix/id-4 [[1 2 3 4] [5 6 7 8] [9 8 7 6] [5 4 3 2]])
            [[1 2 3 4] [5 6 7 8] [9 8 7 6] [5 4 3 2]]))))
+
+(deftest get-submatrix-v1
+  (testing "Test getting a submatrix"
+    (is (= (matrix/submatrix [[1 5 0] [-3 2 7] [0 6 -3]] 0 2)
+           [[-3 2] [0 6]]))))
+
+(deftest get-submatrix-v2
+  (testing "Test getting a submatrix-v2"
+    (is (= (matrix/submatrix [[-6 1 1 6] [-8 5 8 6] [-1 0 8 2] [-7 1 -1 1]] 2 1)
+           [[-6 1 6] [-8 8 6] [-7 -1 1]]))))

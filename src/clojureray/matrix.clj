@@ -26,3 +26,15 @@
   [matrix1 matrix2]
   (mapv (fn [row] (row-times-matrix row matrix2)) matrix1)
   )
+
+(defn- drop-element
+  [coll pos]
+  (concat (subvec coll 0 pos) (subvec coll (inc pos)))
+  )
+
+(defn submatrix
+  [matrix, row, column]
+  (let [row-removed (drop-element matrix row)]
+    (mapv (fn [row] (drop-element row column)) row-removed)
+    )
+  )
