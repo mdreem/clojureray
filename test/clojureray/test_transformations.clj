@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [clojureray.transformations :as transformations]
             [clojureray.matrix :as matrix]
-            [clojureray.vector :as vector]))
+            [clojureray.vector :as vector]
+            [clojureray.comparison :refer :all]))
 
 (deftest multiply-by-translation-matrix
   (testing "Test translation of point"
@@ -41,4 +42,37 @@
     (let [s (transformations/scaling 2 3 4)
           v [-4 6 8 0]]
       (is (= (matrix/multiply-vector s v) [[-8.0] [18.0] [32.0] [0.0]]))))
+  )
+
+(deftest multiply-by-rotation-matrix
+  (testing "Test scaling matrix applied to a point - half quarter - x-axis"
+    (let [r (transformations/rotation_x (/ Math/PI 4))
+          p [0 1 0 1]]
+      (is (aeq (matrix/multiply-vector r p) [[0.0] [0.707107] [0.707107] [1.0]]))))
+
+  (testing "Test scaling matrix applied to a point - full quarter - x-axis"
+    (let [r (transformations/rotation_x (/ Math/PI 2))
+          p [0 1 0 1]]
+      (is (aeq (matrix/multiply-vector r p) [[0.0] [0.0] [1.0] [1.0]]))))
+
+  (testing "Test scaling matrix applied to a point - half quarter - y-axis"
+    (let [r (transformations/rotation_y (/ Math/PI 4))
+          p [0 0 1 1]]
+      (is (aeq (matrix/multiply-vector r p) [[0.707107] [0.0] [0.707107] [1.0]]))))
+
+  (testing "Test scaling matrix applied to a point - full quarter - y-axis"
+    (let [r (transformations/rotation_y (/ Math/PI 2))
+          p [0 0 1 1]]
+      (is (aeq (matrix/multiply-vector r p) [[1.0] [0.0] [0.0] [1.0]]))))
+
+
+  (testing "Test scaling matrix applied to a point - half quarter - z-axis"
+    (let [r (transformations/rotation_z (/ Math/PI 4))
+          p [0 1 0 1]]
+      (is (aeq (matrix/multiply-vector r p) [[-0.707107] [0.707107] [0.0] [1.0]]))))
+
+  (testing "Test scaling matrix applied to a point - full quarter - z-axis"
+    (let [r (transformations/rotation_z (/ Math/PI 2))
+          p [0 1 0 1]]
+      (is (aeq (matrix/multiply-vector r p) [[-1.0] [0.0] [0.0] [1.0]]))))
   )
