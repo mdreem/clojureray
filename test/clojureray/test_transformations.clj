@@ -76,3 +76,35 @@
           p [0 1 0 1]]
       (is (aeq (matrix/multiply-vector r p) [[-1.0] [0.0] [0.0] [1.0]]))))
   )
+
+(deftest multiply-by-shearing-matrix
+  (testing "Test sharing matrix applied to a point - x_y"
+    (let [s (transformations/shearing 1.0 0.0 0.0 0.0 0.0 0.0)
+          p [2 3 4 1]]
+      (is (aeq (matrix/multiply-vector s p) [[5.0] [3.0] [4.0] [1.0]]))))
+
+  (testing "Test sharing matrix applied to a point - x_x"
+    (let [s (transformations/shearing 0.0 1.0 0.0 0.0 0.0 0.0)
+          p [2 3 4 1]]
+      (is (aeq (matrix/multiply-vector s p) [[6.0] [3.0] [4.0] [1.0]]))))
+
+  (testing "Test sharing matrix applied to a point - y_x"
+    (let [s (transformations/shearing 0.0 0.0 1.0 0.0 0.0 0.0)
+          p [2 3 4 1]]
+      (is (aeq (matrix/multiply-vector s p) [[2.0] [5.0] [4.0] [1.0]]))))
+
+  (testing "Test sharing matrix applied to a point - y_z"
+    (let [s (transformations/shearing 0.0 0.0 0.0 1.0 0.0 0.0)
+          p [2 3 4 1]]
+      (is (aeq (matrix/multiply-vector s p) [[2.0] [7.0] [4.0] [1.0]]))))
+
+  (testing "Test sharing matrix applied to a point - z_x"
+    (let [s (transformations/shearing 0.0 0.0 0.0 0.0 1.0 0.0)
+          p [2 3 4 1]]
+      (is (aeq (matrix/multiply-vector s p) [[2.0] [3.0] [6.0] [1.0]]))))
+
+  (testing "Test sharing matrix applied to a point - z_y"
+    (let [s (transformations/shearing 0.0 0.0 0.0 0.0 0.0 1.0)
+          p [2 3 4 1]]
+      (is (aeq (matrix/multiply-vector s p) [[2.0] [3.0] [7.0] [1.0]]))))
+  )
