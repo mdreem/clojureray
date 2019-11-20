@@ -66,3 +66,13 @@
     )
   )
 
+(defn invert
+  [matrix]
+  (let [size (count matrix)]
+    (let [det (/ (determinant matrix) 1.0)]
+      (mapv (fn [row]
+              (mapv (fn [column] (/ (cofactor matrix column row) det)) (range size))
+              ) (range size))
+      )
+    )
+  )
