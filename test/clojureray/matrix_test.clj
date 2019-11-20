@@ -85,3 +85,17 @@
               [-0.02901 -0.14630 -0.10926 0.12963]
               [0.17778 0.06667 -0.26667 0.33333]])))
   )
+
+(deftest compute-product-by-inverse
+  (testing "Test compute product by its inverse"
+    (let [a [[3 -9 7 3]
+             [3 -8 2 -9]
+             [-4 4 4 1]
+             [-6 5 -1 1]]
+          b [[8 2 2 2]
+             [3 -1 7 0]
+             [7 0 5 4]
+             [6 -2 0 5]]
+          c (matrix/multiply a b)]
+      (is (aeq (matrix/multiply c (matrix/invert b)) a))))
+  )
