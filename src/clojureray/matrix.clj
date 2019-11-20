@@ -29,12 +29,40 @@
 
 (defn- drop-element
   [coll pos]
-  (concat (subvec coll 0 pos) (subvec coll (inc pos)))
+  (vec (concat (subvec coll 0 pos) (subvec coll (inc pos))))
   )
 
 (defn submatrix
-  [matrix, row, column]
+  [matrix row column]
   (let [row-removed (drop-element matrix row)]
     (mapv (fn [row] (drop-element row column)) row-removed)
     )
   )
+
+(defn- determinant-2
+  [m]
+  (- (* (get (get m 0) 0) (get (get m 1) 1)) (* (get (get m 1) 0) (get (get m 0) 1)))
+  )
+
+(declare determinant)
+
+(defn minor
+  [matrix row column]
+  (let [sub (submatrix matrix row column)]
+    (let [len (count (first sub))]
+      (if (= len 2) (determinant-2 sub) (determinant sub))
+      )))
+
+(defn cofactor
+  [matrix row column]
+  (let [sign (if (even? (+ row column)) 1 -1)]
+    (* sign (minor matrix row column)))
+  )
+
+(defn determinant
+  [matrix]
+  (let [len (count matrix)]
+    (reduce + (mapv (fn [row] (* (first (get matrix row)) (cofactor matrix row 0))) (range len)))
+    )
+  )
+

@@ -32,3 +32,31 @@
   (testing "Test getting a submatrix-v2"
     (is (= (matrix/submatrix [[-6 1 1 6] [-8 5 8 6] [-1 0 8 2] [-7 1 -1 1]] 2 1)
            [[-6 1 6] [-8 8 6] [-7 -1 1]]))))
+
+(deftest compute-minor-v1
+  (testing "Test computing the minor of a 3x3 matrix"
+    (is (= (matrix/minor [[3 5 0] [2 -1 -7] [6 -1 5]] 1 0) 25))))
+
+(deftest compute-minor-v2
+  (testing "Test computing the minor of a 3x3 matrix"
+    (is (= (matrix/minor [[3 5 0] [2 -1 -7] [6 -1 5]] 1 1) 15))))
+
+(deftest compute-cofactor-neg
+  (testing "Test computing the cofactor of a 3x3 matrix with negation"
+    (is (= (matrix/cofactor [[3 5 0] [2 -1 -7] [6 -1 5]] 1 0) -25))))
+
+(deftest compute-cofactor-pos
+  (testing "Test computing the cofactor of a 3x3 matrix without negation"
+    (is (= (matrix/cofactor [[3 5 0] [2 -1 -7] [6 -1 5]] 1 1) 15))))
+
+(deftest compute-determinant-3d
+  (testing "Test computing the determinant of a 3d matrix"
+    (is (= (matrix/determinant [[1 2 6] [-5 8 -4] [2 6 4]]) -196))))
+
+(deftest compute-determinant-4d
+  (testing "Test computing the determinant of a 4d matrix"
+    (is (= (matrix/determinant [[-2 -8 3 5] [-3 1 7 3] [1 2 -9 6] [-6 7 7 -9]]) -4071))))
+
+(deftest compute-determinant-4d-zero
+  (testing "Test computing the determinant of a 4d matrix which is zero"
+    (is (= (matrix/determinant [[1 1 1 1] [1 1 1 0] [1 1 0 0] [1 1 0 0]]) 0))))
