@@ -1,7 +1,6 @@
 (ns clojureray.matrix-test
   (:require [clojure.test :refer :all]
             [clojureray.matrix :as matrix]
-            [clojureray.vector :as vector]
             [clojureray.comparison :refer :all]))
 
 (deftest transpose-matrix
