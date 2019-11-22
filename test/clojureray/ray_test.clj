@@ -1,7 +1,8 @@
 (ns clojureray.ray-test
   (:require [clojure.test :refer :all]
             [clojureray.ray :as ray]
-            [clojureray.comparison :refer :all]))
+            [clojureray.comparison :refer :all]
+            [clojureray.shape :as shape]))
 
 (deftest point-on-ray
   (let [point [2.0 3.0 4.0 1.0]
@@ -21,18 +22,20 @@
   )
 
 (deftest intersections-with-sphere
-  (testing "A ray intersects a sphere at two points")
-  (is (aeq (ray/intersects [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0]) [4.0 6.0]))
+  (let [sphere (shape/sphere 1.0)]
+    (testing "A ray intersects a sphere at two points")
+    (is (aeq (ray/intersects sphere (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])) [4.0 6.0]))
 
-  (testing "A ray intersects a sphere at a tangent")
-  (is (aeq (ray/intersects [0.0 1.0 -5.0 1.0] [0.0 0.0 1.0 0.0]) [5.0 5.0]))
+    (testing "A ray intersects a sphere at a tangent")
+    (is (aeq (ray/intersects sphere (ray/ray [0.0 1.0 -5.0 1.0] [0.0 0.0 1.0 0.0])) [5.0 5.0]))
 
-  (testing "A ray misses a sphere")
-  (is (= (ray/intersects [0.0 2.0 5.0 1.0] [0.0 0.0 1.0 0.0]) nil))
+    (testing "A ray misses a sphere")
+    (is (= (ray/intersects sphere (ray/ray [0.0 2.0 5.0 1.0] [0.0 0.0 1.0 0.0])) nil))
 
-  (testing "A ray originates inside a sphere")
-  (is (aeq (ray/intersects [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0]) [-1.0 1.0]))
+    (testing "A ray originates inside a sphere")
+    (is (aeq (ray/intersects sphere (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])) [-1.0 1.0]))
 
-  (testing "A sphere is behind a ray")
-  (is (aeq (ray/intersects [0.0 0.0 5.0 1.0] [0.0 0.0 1.0 0.0]) [-6.0 -4.0]))
+    (testing "A sphere is behind a ray")
+    (is (aeq (ray/intersects sphere (ray/ray [0.0 0.0 5.0 1.0] [0.0 0.0 1.0 0.0])) [-6.0 -4.0]))
+    )
   )
