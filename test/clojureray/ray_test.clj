@@ -23,19 +23,57 @@
 
 (deftest intersections-with-sphere
   (let [sphere (shape/sphere 1.0)]
-    (testing "A ray intersects a sphere at two points")
-    (is (aeq (ray/intersects sphere (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])) [4.0 6.0]))
+    (testing "A ray intersects a sphere at two points"
+      (let [res (ray/intersect sphere (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0]))
+            res_0 (get res 0)
+            res_1 (get res 1)
+            {t_0 :t object_0 :object} res_0
+            {t_1 :t object_1 :object} res_1]
+        (is (= t_0 4.0))
+        (is (= t_1 6.0))
+        (is (= object_0 sphere))
+        (is (= object_1 sphere))
+        ))
 
-    (testing "A ray intersects a sphere at a tangent")
-    (is (aeq (ray/intersects sphere (ray/ray [0.0 1.0 -5.0 1.0] [0.0 0.0 1.0 0.0])) [5.0 5.0]))
+    (testing "A ray intersects a sphere at a tangent"
+      (let [res (ray/intersect sphere (ray/ray [0.0 1.0 -5.0 1.0] [0.0 0.0 1.0 0.0]))
+            res_0 (get res 0)
+            res_1 (get res 1)
+            {t_0 :t object_0 :object} res_0
+            {t_1 :t object_1 :object} res_1]
+        (is (= t_0 5.0))
+        (is (= t_1 5.0))
+        (is (= object_0 sphere))
+        (is (= object_1 sphere))
+        ))
 
-    (testing "A ray misses a sphere")
-    (is (= (ray/intersects sphere (ray/ray [0.0 2.0 5.0 1.0] [0.0 0.0 1.0 0.0])) nil))
+    (testing "A ray misses a sphere"
+      (let [res (ray/intersect sphere (ray/ray [0.0 2.0 5.0 1.0] [0.0 0.0 1.0 0.0]))]
+        (is (= res []))
+        ))
 
-    (testing "A ray originates inside a sphere")
-    (is (aeq (ray/intersects sphere (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])) [-1.0 1.0]))
+    (testing "A ray originates inside a sphere"
+      (let [res (ray/intersect sphere (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0]))
+            res_0 (get res 0)
+            res_1 (get res 1)
+            {t_0 :t object_0 :object} res_0
+            {t_1 :t object_1 :object} res_1]
+        (is (= t_0 -1.0))
+        (is (= t_1 1.0))
+        (is (= object_0 sphere))
+        (is (= object_1 sphere))
+        ))
 
-    (testing "A sphere is behind a ray")
-    (is (aeq (ray/intersects sphere (ray/ray [0.0 0.0 5.0 1.0] [0.0 0.0 1.0 0.0])) [-6.0 -4.0]))
+    (testing "A sphere is behind a ray"
+      (let [res (ray/intersect sphere (ray/ray [0.0 0.0 5.0 1.0] [0.0 0.0 1.0 0.0]))
+            res_0 (get res 0)
+            res_1 (get res 1)
+            {t_0 :t object_0 :object} res_0
+            {t_1 :t object_1 :object} res_1]
+        (is (= t_0 -6.0))
+        (is (= t_1 -4.0))
+        (is (= object_0 sphere))
+        (is (= object_1 sphere))
+        ))
     )
   )
