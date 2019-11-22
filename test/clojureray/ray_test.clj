@@ -77,3 +77,41 @@
         ))
     )
   )
+
+(deftest intersection-hits
+  (let [sphere (shape/sphere 1.0)]
+    (testing "The hit, when all intersections have positive t"
+      (let [i1 (ray/intersection 1.0, sphere)
+            i2 (ray/intersection 2.0, sphere)]
+        (is (= (ray/hit [i1 i2]) i1))
+        (is (= (ray/hit [i2 i1]) i1))
+        )
+      )
+
+    (testing "The hit, when some intersections have negative t"
+      (let [i1 (ray/intersection -1.0, sphere)
+            i2 (ray/intersection 1.0, sphere)]
+        (is (= (ray/hit [i1 i2]) i2))
+        (is (= (ray/hit [i2 i1]) i2))
+        )
+      )
+
+    (testing "The hit, when all intersections have negative t"
+      (let [i1 (ray/intersection -2.0, sphere)
+            i2 (ray/intersection -1.0, sphere)]
+        (is (= (ray/hit [i1 i2]) nil))
+        (is (= (ray/hit [i2 i1]) nil))
+        )
+      )
+
+    (testing "The hit is always the lowest nonnegative intersection"
+      (let [i1 (ray/intersection 5.0, sphere)
+            i2 (ray/intersection 7.0, sphere)
+            i3 (ray/intersection -3.0, sphere)
+            i4 (ray/intersection 2.0, sphere)]
+        (is (= (ray/hit [i1 i2 i3 i4]) i4))
+        (is (= (ray/hit [i1 i4 i2 i3]) i4))
+        )
+      )
+    )
+  )
