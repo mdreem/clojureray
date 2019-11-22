@@ -1,4 +1,4 @@
-(ns clojureray.transformations)
+(ns clojureray.transformation)
 
 (defn translation
   [x y z]

@@ -1,6 +1,6 @@
 (ns clojureray.test-transformations
   (:require [clojure.test :refer :all]
-            [clojureray.transformations :as transformations]
+            [clojureray.transformation :as transformations]
             [clojureray.matrix :as matrix]
             [clojureray.vector :as vector]
             [clojureray.comparison :refer :all]))
