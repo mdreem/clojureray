@@ -145,7 +145,6 @@
       (is (= (count intersections) 2))
       (is (= (:t (get intersections 0)) 3.0))
       (is (= (:t (get intersections 1)) 7.0))
-
       )
     )
   )
