@@ -1,11 +1,31 @@
 (ns clojureray.ray
   (:require [clojureray.vector :as vector]
-            [clojureray.comparison :refer :all]))
+            [clojureray.comparison :refer :all]
+            [clojureray.matrix :as matrix]
+            [clojureray.transformation :as transformation]))
 
 (defn ray
   [origin direction]
   {:origin    origin
    :direction direction})
+
+(defn get-origin
+  [ray]
+  (let [{origin :origin} ray] origin))
+
+(defn get-direction
+  [ray]
+  (let [{direction :direction} ray] direction))
+
+(defn transform
+  [r m]
+  (let [{origin    :origin
+         direction :direction} r
+        new_origin (first (matrix/transpose (matrix/multiply-vector m origin)))
+        new_direction (first (matrix/transpose(matrix/multiply-vector m direction)))]
+    (ray new_origin new_direction)
+    )
+  )
 
 (defn intersection
   [t object]
@@ -34,7 +54,10 @@
 (defmulti intersect (fn [shape _] (:shape shape)))
 
 (defmethod intersect :sphere [sphere ray]
-  (let [{origin :origin direction :direction} ray]
+  (let [ray_transformed (transform ray (matrix/invert (:transformation sphere)))
+        {origin    :origin
+         direction :direction} ray_transformed
+        ]
     (intersects-sphere origin direction sphere)
     )
   )

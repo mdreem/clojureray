@@ -1,6 +1,7 @@
 (ns clojureray.ray-test
   (:require [clojure.test :refer :all]
             [clojureray.ray :as ray]
+            [clojureray.transformation :as transformation]
             [clojureray.comparison :refer :all]
             [clojureray.shape :as shape]))
 
@@ -112,6 +113,23 @@
         (is (= (ray/hit [i1 i2 i3 i4]) i4))
         (is (= (ray/hit [i1 i4 i2 i3]) i4))
         )
+      )
+    )
+  )
+
+
+(deftest transform-rays
+  (let [r (ray/ray [1.0 2.0 3.0 1.0] [0.0 1.0 0.0 0.0])]
+    (testing "Translating a ray"
+      (let [translation (ray/transform r (transformation/translation 3 4 5))]
+        (is (= (ray/get-origin translation) [4.0, 6.0, 8.0, 1.0]))
+        (is (= (ray/get-direction translation) [0.0, 1.0, 0.0, 0.0])))
+      )
+
+    (testing "Scaling a ray"
+      (let [translation (ray/transform r (transformation/scaling 2 3 4))]
+        (is (= (ray/get-origin translation) [2.0, 6.0, 12.0, 1.0]))
+        (is (= (ray/get-direction translation) [0.0, 3.0, 0.0, 0.0])))
       )
     )
   )

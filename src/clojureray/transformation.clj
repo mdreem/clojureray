@@ -1,4 +1,5 @@
-(ns clojureray.transformation)
+(ns clojureray.transformation
+  (:require [clojureray.matrix :as matrix]))
 
 (defn translation
   [x y z]
@@ -41,3 +42,8 @@
    [y_x 1.0 y_z 0.0]
    [z_x z_y 1.0 0.0]
    [0.0 0.0 0.0 1.0]])
+
+(defn set-transform
+  [shape transformation]
+  (assoc shape :transformation transformation)
+  )
