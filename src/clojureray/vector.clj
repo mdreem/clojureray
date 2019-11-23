@@ -39,8 +39,15 @@
   )
 
 (defn length
-  [v1]
-  (Math/sqrt (squared-length v1)))
+  [v]
+  (Math/sqrt (squared-length v)))
+
+(defn normalize
+  [v]
+  (let [inv-len (/ 1 (length v))]
+    (scalar-multiplication inv-len v)
+    )
+  )
 
 (defn cross
   [[x1 x2 x3 _] [y1 y2 y3 _]]

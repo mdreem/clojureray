@@ -1,7 +1,8 @@
 (ns clojureray.core
-  (:gen-class))
+  (:gen-class)
+  (:require [clojureray.project-sphere :as project-sphere]))
 
 (defn -main
-  "I don't do a whole lot ... yet."
+  "Generate a scene."
   [& args]
-  (println "Hello, World!"))
+  (project-sphere/write-file 100 100 "test.ppm"))
