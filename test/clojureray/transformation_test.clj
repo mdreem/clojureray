@@ -1,4 +1,4 @@
-(ns clojureray.test-transformations
+(ns clojureray.transformation_test
   (:require [clojure.test :refer :all]
             [clojureray.transformation :as transformation]
             [clojureray.matrix :as matrix]
