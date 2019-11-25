@@ -61,3 +61,7 @@
 (deftest cross-product-v2
   (testing "Test cross product v2"
     (is (= (vector/cross [2 3 4 100] [1 2 3 100]) [1 -2 1 0]))))
+
+(deftest times
+  (testing "Test v1 times v2"
+    (is (= (vector/times [1.0 2.0 3.0 4.0] [5.0 6.0 7.0 8.0]) [5.0 12.0 21.0 32.0]))))

@@ -88,3 +88,35 @@
     (vector/subtract in n-pos)
     )
   )
+
+(defn- compute-diffuse-specular
+  [lightv normalv eyev light light-dot-normal effective-color material]
+  (if (< light-dot-normal 0)
+    {:diffuse  [0.0 0.0 0.0]
+     :specular [0.0 0.0 0.0]}
+    (let [diffuse (vector/scalar-multiplication light-dot-normal (vector/scalar-multiplication (:diffuse material) effective-color))
+          reflectv (reflect (vector/negate lightv) normalv)
+          reflect-dot-eye (vector/dot reflectv eyev)
+          specular (if (<= reflect-dot-eye 0)
+                     [0.0 0.0 0.0]
+                     (let [factor (Math/pow reflect-dot-eye (:shininess material))]
+                       (vector/scalar-multiplication factor (vector/scalar-multiplication (:specular material) (:intensity light))))
+                     )]
+      {:diffuse  diffuse
+       :specular specular}
+      )
+    )
+  )
+
+(defn lighting
+  [material light, point, eyev, normalv]
+  (let [effective-color (vector/times (:color material) (:intensity light))
+        lightv (vector/normalize (vector/subtract (:position light) point))
+        ambient (vector/scalar-multiplication (:ambient material) effective-color)
+        light-dot-normal (vector/dot lightv normalv)
+        diff-spec (compute-diffuse-specular lightv normalv eyev light light-dot-normal effective-color material)
+        {diffuse  :diffuse
+         specular :specular} diff-spec
+        ]
+    (vector/add (vector/add ambient diffuse) specular))
+  )

@@ -170,3 +170,50 @@
       (is (aeq (ray/reflect [0.0 -1.0 0.0 0.0] [p p 0.0 0.0]) [1.0 0.0 0.0 0.0]))
       ))
   )
+
+(deftest lighting-tests
+  (let [mat shape/default-material
+        position [0.0 0.0 0.0 1.0]
+        p (/ (Math/sqrt 2) 2)]
+
+    (testing "Lighting with the eye between the light and the surface"
+      (let [light (shape/point-light [0.0 0.0 -10.0 1.0] [1.0 1.0 1.0])
+            eyev [0.0 0.0 -1.0 0.0]
+            normalv [0.0 0.0 -1.0 0.0]]
+        (is (aeq (ray/lighting mat light position eyev normalv)
+                 [1.9 1.9 1.9]))
+        ))
+
+    (testing "Lighting with the eye between light and surface, eye offset 45 degrees"
+      (let [light (shape/point-light [0.0 0.0 -10.0 1.0] [1.0 1.0 1.0])
+            eyev [0.0 p (- p) 0.0]
+            normalv [0.0 0.0 -1.0 0.0]]
+        (is (aeq (ray/lighting mat light position eyev normalv)
+                 [1.0 1.0 1.0]))
+        ))
+
+    (testing "Lighting with eye opposite surface, light offset 45 degrees"
+      (let [light (shape/point-light [0.0 10.0 -10.0 1.0] [1.0 1.0 1.0])
+            eyev [0.0 0.0 -1.0 0.0]
+            normalv [0.0 0.0 -1.0 0.0]]
+        (is (aeq (ray/lighting mat light position eyev normalv)
+                 [0.7364 0.7364 0.7364]))
+        ))
+
+    (testing "Lighting with eye in the path of the reflection vector"
+      (let [light (shape/point-light [0.0 10.0 -10.0 1.0] [1.0 1.0 1.0])
+            eyev [0.0 (- p) (- p) 0.0]
+            normalv [0.0 0.0 -1.0 0.0]]
+        (is (aeq (ray/lighting mat light position eyev normalv)
+                 [1.6364 1.6364 1.6364]))
+        ))
+
+    (testing "Lighting with the light behind the surface"
+      (let [light (shape/point-light [0.0 0.0 10.0 1.0] [1.0 1.0 1.0])
+            eyev [0.0 0.0 -1.0 0.0]
+            normalv [0.0 0.0 -1.0 0.0]]
+        (is (aeq (ray/lighting mat light position eyev normalv)
+                 [0.1 0.1 0.1]))
+        ))
+    )
+  )

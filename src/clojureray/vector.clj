@@ -28,6 +28,11 @@
   (mapv (fn [e] (* s e)) v)
   )
 
+(defn times
+  [v1 v2]
+  (mapv * v1 v2)
+  )
+
 (defn dot
   [v1 v2]
   (reduce + (mapv * v1 v2))
