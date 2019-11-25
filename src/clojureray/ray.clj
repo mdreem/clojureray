@@ -21,8 +21,8 @@
   [r m]
   (let [{origin    :origin
          direction :direction} r
-        new_origin (first (matrix/transpose (matrix/multiply-vector m origin)))
-        new_direction (first (matrix/transpose(matrix/multiply-vector m direction)))]
+        new_origin (matrix/multiply-vector m origin)
+        new_direction (matrix/multiply-vector m direction)]
     (ray new_origin new_direction)
     )
   )
@@ -69,4 +69,15 @@
 (defn hit
   [intersections]
   (first (sort-by get-t (filter (fn [i] (>= (get-t i) 0)) intersections)))
+  )
+
+
+(defmulti normal-at (fn [shape _] (:shape shape)))
+
+(defmethod normal-at :sphere [sphere world-point]
+  (let [inverse-transform (matrix/invert (:transformation sphere))
+        object-point (matrix/multiply-vector inverse-transform world-point)
+        object-normal (vector/subtract object-point [0 0 0 1])
+        world-normal (matrix/multiply-vector (matrix/transpose inverse-transform) object-normal)]
+    world-normal)
   )

@@ -35,7 +35,7 @@
 (deftest multiply-matrix-with-vector
   (testing "Test multiplying a matrix with a vector"
     (is (= (matrix/multiply-vector [[1 2 3 4] [5 6 7 8] [9 8 7 6] [5 4 3 2]] [1 2 3 4])
-           [[30] [70] [70] [30]])))
+           [30 70 70 30])))
   )
 
 (deftest get-submatrix

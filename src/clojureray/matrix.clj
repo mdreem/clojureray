@@ -29,7 +29,7 @@
 
 (defn multiply-vector
   [matrix v]
-  (multiply matrix (transpose [v]))
+  (first (transpose (multiply matrix (transpose [v]))))
   )
 
 (defn- drop-element
