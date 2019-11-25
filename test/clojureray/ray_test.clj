@@ -3,7 +3,8 @@
             [clojureray.ray :as ray]
             [clojureray.transformation :as transformation]
             [clojureray.comparison :refer :all]
-            [clojureray.shape :as shape]))
+            [clojureray.shape :as shape]
+            [clojureray.matrix :as matrix]))
 
 (deftest point-on-ray
   (let [point [2.0 3.0 4.0 1.0]
@@ -130,6 +131,32 @@
       (let [translation (ray/transform r (transformation/scaling 2 3 4))]
         (is (= (ray/get-origin translation) [2.0, 6.0, 12.0, 1.0]))
         (is (= (ray/get-direction translation) [0.0, 3.0, 0.0, 0.0])))
+      )
+    )
+  )
+
+(deftest compute-normals-to-sphere
+
+  (testing "Test normal on sphere"
+    (let [p (/ (Math/sqrt 3) 3)]
+      (is (aeq (ray/normal-at (shape/sphere 1) [p p p 1.0])
+               [p p p 0.0])))
+    )
+
+  (testing "Test normal on translated sphere"
+    (let [translation (transformation/translation 0.0 1.0 0.0)]
+      (is (aeq (ray/normal-at (transformation/set-transform (shape/sphere 1) translation) [0 1.707106 -0.707106 1.0])
+               [0.0 0.707106 -0.707106 0.0]))
+      )
+    )
+
+  (testing "Test normal on transformed sphere"
+    (let [scaling (transformation/scaling 1.0 0.5 1.0)
+          rotation (transformation/rotation_z (/ Math/PI 5))
+          combined (matrix/multiply scaling rotation)
+          p (/ (Math/sqrt 2) 2)]
+      (is (aeq (ray/normal-at (transformation/set-transform (shape/sphere 1) combined) [0 p (- p) 1.0])
+               [0.0 0.97014 -0.24254 0.0]))
       )
     )
   )

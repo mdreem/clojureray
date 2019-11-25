@@ -71,13 +71,12 @@
   (first (sort-by get-t (filter (fn [i] (>= (get-t i) 0)) intersections)))
   )
 
-
 (defmulti normal-at (fn [shape _] (:shape shape)))
 
 (defmethod normal-at :sphere [sphere world-point]
   (let [inverse-transform (matrix/invert (:transformation sphere))
         object-point (matrix/multiply-vector inverse-transform world-point)
-        object-normal (vector/subtract object-point [0 0 0 1])
+        object-normal (vector/subtract object-point [0.0 0.0 0.0 1.0])
         world-normal (matrix/multiply-vector (matrix/transpose inverse-transform) object-normal)]
-    world-normal)
+    (vector/normalize (assoc world-normal 3 0.0)))
   )
