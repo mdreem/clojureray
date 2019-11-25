@@ -1,4 +1,4 @@
-(ns clojureray.project-sphere
+(ns clojureray.example.project-sphere
   (:require [clojureray.shape :as shape]
             [clojureray.vector :as vector]
             [clojureray.transformation :as transformation]

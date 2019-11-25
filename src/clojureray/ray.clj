@@ -33,8 +33,18 @@
    :object object})
 
 (defn position
-  [[origin direction] dist]
-  (vector/add origin (vector/scalar-multiplication dist direction))
+  [ray dist]
+  (let [{origin    :origin
+         direction :direction} ray]
+    (vector/add origin (vector/scalar-multiplication dist direction))
+    )
+  )
+
+(defn normalize
+  [ray]
+  (let [normalized (vector/normalize (:direction ray))]
+    (assoc ray :direction normalized)
+    )
   )
 
 (defn intersects-sphere
@@ -56,8 +66,7 @@
 (defmethod intersect :sphere [sphere ray]
   (let [ray_transformed (transform ray (matrix/invert (:transformation sphere)))
         {origin    :origin
-         direction :direction} ray_transformed
-        ]
+         direction :direction} ray_transformed]
     (intersects-sphere origin direction sphere)
     )
   )

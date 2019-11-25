@@ -8,18 +8,19 @@
 
 (deftest point-on-ray
   (let [point [2.0 3.0 4.0 1.0]
-        vector [1.0 0.0 0.0 0.0]]
+        vector [1.0 0.0 0.0 0.0]
+        ray (ray/ray point vector)]
     (testing "Test point on ray at distance 0.0"
-      (is (= (ray/position [point vector] 0) [2.0 3.0 4.0 1.0])))
+      (is (= (ray/position ray 0) [2.0 3.0 4.0 1.0])))
 
     (testing "Test point on ray at distance 1.0"
-      (is (= (ray/position [point vector] 1.0) [3.0 3.0 4.0 1.0])))
+      (is (= (ray/position ray 1.0) [3.0 3.0 4.0 1.0])))
 
     (testing "Test point on ray at distance -1.0"
-      (is (= (ray/position [point vector] -1.0) [1.0 3.0 4.0 1.0])))
+      (is (= (ray/position ray -1.0) [1.0 3.0 4.0 1.0])))
 
     (testing "Test point on ray at distance 2.5"
-      (is (= (ray/position [point vector] 2.5) [4.5 3.0 4.0 1.0])))
+      (is (= (ray/position ray 2.5) [4.5 3.0 4.0 1.0])))
     )
   )
 
@@ -215,5 +216,16 @@
         (is (aeq (ray/lighting mat light position eyev normalv)
                  [0.1 0.1 0.1]))
         ))
+    )
+  )
+
+(deftest normalize-ray
+  (let [r (ray/ray [1.0 2.0 3.0 1.0] [1.0 1.0 1.0 0.0])
+        p (/ (Math/sqrt 3) 3)]
+    (testing "Normalize a ray"
+      (let [norm (ray/normalize r)]
+        (is (= (ray/get-origin norm) [1.0 2.0 3.0 1.0]))
+        (is (aeq (ray/get-direction norm) [p, p, p, 0.0])))
+      )
     )
   )

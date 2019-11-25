@@ -1,6 +1,6 @@
 (ns clojureray.core
   (:gen-class)
-  (:require [clojureray.project-sphere :as project-sphere]))
+  (:require [clojureray.example.first-sphere :as project-sphere]))
 
 (defn -main
   "Generate a scene."
