@@ -80,3 +80,11 @@
         world-normal (matrix/multiply-vector (matrix/transpose inverse-transform) object-normal)]
     (vector/normalize (assoc world-normal 3 0.0)))
   )
+
+(defn reflect
+  [in normal]
+  (let [n-len (vector/dot in normal)
+        n-pos (vector/scalar-multiplication (* 2 n-len) normal)]
+    (vector/subtract in n-pos)
+    )
+  )

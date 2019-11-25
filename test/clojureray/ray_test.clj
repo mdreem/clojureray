@@ -136,7 +136,6 @@
   )
 
 (deftest compute-normals-to-sphere
-
   (testing "Test normal on sphere"
     (let [p (/ (Math/sqrt 3) 3)]
       (is (aeq (ray/normal-at (shape/sphere 1) [p p p 1.0])
@@ -159,4 +158,15 @@
                [0.0 0.97014 -0.24254 0.0]))
       )
     )
+  )
+
+(deftest compute-reflections
+  (testing "Test reflecting a factor approaching at 45 degrees"
+    (is (= (ray/reflect [1.0 -1.0 0.0 0.0] [0.0 1.0 0.0 0.0]) [1.0 1.0 0.0 0.0]))
+    )
+
+  (testing "Test reflecting a vector off a slanted surface"
+    (let [p (/ (Math/sqrt 2) 2)]
+      (is (aeq (ray/reflect [0.0 -1.0 0.0 0.0] [p p 0.0 0.0]) [1.0 0.0 0.0 0.0]))
+      ))
   )
