@@ -82,8 +82,7 @@
 
 (defn hit
   [intersections]
-  (first (sort-by get-t (filter (fn [i] (>= (get-t i) 0)) intersections)))
-  )
+  (first (sort-intersections intersections)))
 
 (defmulti normal-at (fn [shape _] (:shape shape)))
 

@@ -40,3 +40,23 @@
     )
   )
 
+(deftest prepare-computations-of-intersections
+  (let [shape (shape/sphere 1)]
+    (testing "Test prepare computations")
+    (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
+          intersection (ray/intersection 4.0 shape)
+          computations (world/prepare-computations intersection r)
+          {t       :t
+           object  :object
+           point   :point
+           eyev    :eyev
+           normalv :normalv} computations
+          ]
+      (is (= t 4.0))
+      (is (= object shape))
+      (is (= point [0.0 0.0 -1.0 1.0]))
+      (is (= eyev [0.0 0.0 -1.0 0.0]))
+      (is (= normalv [0.0 0.0 -1.0 0.0]))
+      )
+    )
+  )

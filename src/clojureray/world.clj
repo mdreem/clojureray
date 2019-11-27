@@ -1,7 +1,8 @@
 (ns clojureray.world
   (:require [clojureray.ray :as ray]
             [clojureray.shape :as shape]
-            [clojureray.transformation :as transformation]))
+            [clojureray.transformation :as transformation]
+            [clojureray.vector :as vector]))
 
 (def empty-world
   {:shapes []
@@ -23,8 +24,7 @@
 
 (def default-world
   (let [material (shape/create-material [0.8 1.0 0.6] 0.1 0.7 0.2 200.0)
-        sphere-1 (-> (shape/sphere 1)
-                     (shape/set-material material))
+        sphere-1 (-> (shape/sphere 1))
         sphere-2 (-> (shape/sphere 1)
                      (shape/set-material shape/default-material)
                      (transformation/set-transform (transformation/scaling 0.5 0.5 0.5)))
@@ -35,7 +35,6 @@
     world)
   )
 
-
 (defn intersect-world
   [world ray]
   (let [{shapes :shapes
@@ -44,5 +43,20 @@
       (flatten
         (mapv (fn [shape] (ray/intersect shape ray)) shapes))
       )
+    )
+  )
+
+(defn prepare-computations
+  [intersection ray]
+  (let [{t      :t
+         object :object} intersection
+        position (ray/position ray t)
+        eyev (vector/negate (:direction ray))
+        normalv (ray/normal-at object position)]
+    {:t       t
+     :object  object
+     :point   position
+     :eyev    eyev
+     :normalv normalv}
     )
   )
