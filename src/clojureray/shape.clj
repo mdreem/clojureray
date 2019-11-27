@@ -18,7 +18,7 @@
 
 (defn set-material
   [shape material]
-  (assoc :material shape material)
+  (assoc shape :material material)
   )
 
 (defn sphere
