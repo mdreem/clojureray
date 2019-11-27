@@ -24,13 +24,16 @@
 
 (def default-world
   (let [material (shape/create-material [0.8 1.0 0.6] 0.1 0.7 0.2 200.0)
-        sphere-1 (-> (shape/sphere 1))
+        sphere-1 (-> (shape/sphere 1)
+                     (shape/set-material material))
         sphere-2 (-> (shape/sphere 1)
                      (shape/set-material shape/default-material)
                      (transformation/set-transform (transformation/scaling 0.5 0.5 0.5)))
+        light (shape/point-light [-10.0 -10.0 -10.0 1.0] [1.0 1.0 1.0])
         world (-> empty-world
                   (add-shape sphere-1)
-                  (add-shape sphere-2))
+                  (add-shape sphere-2)
+                  (add-light light))
         ]
     world)
   )
@@ -61,5 +64,25 @@
      :eyev    eyev
      :normalv (if inside (vector/negate normalv) normalv)
      :inside  inside}
+    )
+  )
+
+(defn- add-or-identity
+  ([v1 v2] (vector/add v1 v2))
+  ([v] v)
+  ([] nil)
+  )
+
+(defn shade-hit
+  [world comps]
+  (let [{object  :object
+         point   :point
+         eyev    :eyev
+         normalv :normalv} comps
+        material (:material object)
+        lights (:lights world)]
+    (reduce add-or-identity
+            (mapv (fn [light] (ray/lighting material light point eyev normalv)) lights)
+            )
     )
   )

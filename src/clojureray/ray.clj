@@ -122,14 +122,13 @@
   )
 
 (defn lighting
-  [material light, point, eyev, normalv]
+  [material light point eyev normalv]
   (let [effective-color (vector/times (:color material) (:intensity light))
         lightv (vector/normalize (vector/subtract (:position light) point))
         ambient (vector/scalar-multiplication (:ambient material) effective-color)
         light-dot-normal (vector/dot lightv normalv)
         diff-spec (compute-diffuse-specular lightv normalv eyev light light-dot-normal effective-color material)
         {diffuse  :diffuse
-         specular :specular} diff-spec
-        ]
+         specular :specular} diff-spec]
     (vector/add (vector/add ambient diffuse) specular))
   )

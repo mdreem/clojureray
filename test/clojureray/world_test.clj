@@ -79,3 +79,27 @@
       (is (= inside true)))
     )
   )
+
+(deftest shading-an-intersection
+  (let [shape (shape/sphere 1)]
+    (testing "Shading an intersection"
+      (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
+            intersection (ray/intersection 4.0 (first (:shapes world/default-world)))
+            comps (world/prepare-computations intersection r)
+            shade-hit (world/shade-hit world/default-world comps)]
+        (is (aeq shade-hit [0.38066 0.47583 0.2855]))
+        )
+      )
+
+    (testing "Shading an intersection from the inside"
+      (let [r (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])
+            light (shape/point-light [0.0 0.25 0.0 1.0] [1.0 1.0 1.0])
+            intersection (ray/intersection 0.5 (second (:shapes world/default-world)))
+            comps (world/prepare-computations intersection r)
+            world-light (assoc world/default-world :lights [light])
+            shade-hit (world/shade-hit world-light comps)]
+        (is (aeq shade-hit [0.90498 0.90498 0.90498]))
+        )
+      )
+    )
+  )
