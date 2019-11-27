@@ -42,7 +42,7 @@
 
 (deftest prepare-computations-of-intersections
   (let [shape (shape/sphere 1)]
-    (testing "Test prepare computations")
+    (testing "Test prepare computations when intersection occurs on the outside")
     (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
           intersection (ray/intersection 4.0 shape)
           computations (world/prepare-computations intersection r)
@@ -50,13 +50,32 @@
            object  :object
            point   :point
            eyev    :eyev
-           normalv :normalv} computations
+           normalv :normalv
+           inside  :inside} computations
           ]
       (is (= t 4.0))
       (is (= object shape))
       (is (= point [0.0 0.0 -1.0 1.0]))
       (is (= eyev [0.0 0.0 -1.0 0.0]))
       (is (= normalv [0.0 0.0 -1.0 0.0]))
-      )
+      (is (= inside false)))
+
+    (testing "Test prepare computations when intersection occurs on the inside")
+    (let [r (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])
+          intersection (ray/intersection 1.0 shape)
+          computations (world/prepare-computations intersection r)
+          {t       :t
+           object  :object
+           point   :point
+           eyev    :eyev
+           normalv :normalv
+           inside  :inside} computations
+          ]
+      (is (= t 1.0))
+      (is (= object shape))
+      (is (= point [0.0 0.0 1.0 1.0]))
+      (is (= eyev [0.0 0.0 -1.0 0.0]))
+      (is (= normalv [0.0 0.0 -1.0 0.0]))
+      (is (= inside true)))
     )
   )

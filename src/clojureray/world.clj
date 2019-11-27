@@ -52,11 +52,14 @@
          object :object} intersection
         position (ray/position ray t)
         eyev (vector/negate (:direction ray))
-        normalv (ray/normal-at object position)]
+        normalv (ray/normal-at object position)
+        inside (< (vector/dot normalv eyev) 0)
+        ]
     {:t       t
      :object  object
      :point   position
      :eyev    eyev
-     :normalv normalv}
+     :normalv (if inside (vector/negate normalv) normalv)
+     :inside  inside}
     )
   )
