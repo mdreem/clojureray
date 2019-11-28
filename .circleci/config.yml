@@ -1,0 +1,22 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/clojure:lein-2.9.1
+    environment:
+      LEIN_ROOT: nbd
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - restore_cache:
+          key: clojureray-{{ checksum "project.clj" }}
+      - run: lein deps
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: clojureray-{{ checksum "project.clj" }}
+      - run: lein do test, uberjar
+      - store_artifacts:
+          path: target/uberjar/clojureray.jar
+          destination: uberjar
+
