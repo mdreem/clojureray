@@ -4,6 +4,14 @@
             [clojureray.transformation :as transformation]
             [clojureray.vector :as vector]))
 
+(defn ray-vector
+  [x y z]
+  [(double x) (double y) (double z) 0.0])
+
+(defn point
+  [x y z]
+  [(double x) (double y) (double z) 1.0])
+
 (def empty-world
   {:shapes []
    :lights []})
@@ -29,7 +37,7 @@
         sphere-2 (-> (shape/sphere 1)
                      (shape/set-material shape/default-material)
                      (transformation/set-transform (transformation/scaling 0.5 0.5 0.5)))
-        light (shape/point-light [-10.0 -10.0 -10.0 1.0] [1.0 1.0 1.0])
+        light (shape/point-light [-10.0 10.0 -10.0 1.0] [1.0 1.0 1.0])
         world (-> empty-world
                   (add-shape sphere-1)
                   (add-shape sphere-2)
@@ -93,5 +101,26 @@
         hit (first intersections)]
     (if hit (let [computations (prepare-computations hit ray)
                   shade (shade-hit world computations)] shade) [0.0 0.0 0.0])
+    )
+  )
+
+(defn is-shadowed-with-light-
+  [world light point]
+  (let [v (vector/subtract (:position light) point)
+        distance (vector/length v)
+        direction (vector/normalize v)
+        r (ray/ray point direction)
+        intersections (intersect-world world r)
+        h (ray/hit intersections)]
+    (if h (< (:t h) distance)
+          false)
+    )
+  )
+
+(defn is-shadowed
+  [world point]
+  (let [lights (:lights world)
+        s (mapv (fn [light] (is-shadowed-with-light- world light point)) lights)]
+    (every? true? s)
     )
   )

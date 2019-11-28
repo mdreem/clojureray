@@ -4,7 +4,8 @@
             [clojureray.transformation :as transformation]
             [clojureray.comparison :refer :all]
             [clojureray.shape :as shape]
-            [clojureray.matrix :as matrix]))
+            [clojureray.matrix :as matrix]
+            [clojureray.world :as world]))
 
 (deftest point-on-ray
   (let [point [2.0 3.0 4.0 1.0]

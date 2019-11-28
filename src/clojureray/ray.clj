@@ -1,8 +1,7 @@
 (ns clojureray.ray
   (:require [clojureray.vector :as vector]
             [clojureray.comparison :refer :all]
-            [clojureray.matrix :as matrix]
-            [clojureray.transformation :as transformation]))
+            [clojureray.matrix :as matrix]))
 
 (defn ray
   [origin direction]

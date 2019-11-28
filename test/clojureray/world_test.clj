@@ -120,3 +120,23 @@
       )
     )
   )
+
+(deftest cast-shadows
+  (let [w world/default-world]
+    (testing "There is no shadow when nothing os collinear with point and light"
+      (is (= (world/is-shadowed w (world/point 0 10 0)) false))
+      )
+
+    (testing "The shadow when an object is between the point and the light"
+      (is (= (world/is-shadowed w (world/point 10 -10 10)) true))
+      )
+
+    (testing "There is no shadow when an object is behind the light"
+      (is (= (world/is-shadowed w (world/point -20 20 -20)) false))
+      )
+
+    (testing "There is no shadow when an object is behind the point"
+      (is (= (world/is-shadowed w (world/point -2 2 -2)) false))
+      )
+    )
+  )
