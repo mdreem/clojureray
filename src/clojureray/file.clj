@@ -18,11 +18,17 @@
   (format "%s\n%s" r1 r2)
   )
 
+(defn convert-color
+  [color]
+  (mapv (fn [c]
+          (int (* 255 (min 1.0 c)))) color)
+  )
+
 (defn convert-canvas
   [canvas]
   (reduce concat-rows
           (mapv (fn [row]
-                  (reduce concat-colors (mapv (fn [e] (color-to-string e)) row))
+                  (reduce concat-colors (mapv (fn [e] (color-to-string (convert-color e))) row))
                   ) canvas)
           ))
 

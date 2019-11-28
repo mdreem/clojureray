@@ -1,8 +1,8 @@
 (ns clojureray.core
   (:gen-class)
-  (:require [clojureray.example.first-sphere :as project-sphere]))
+  (:require [clojureray.example.first-scene :as first-scene]))
 
 (defn -main
   "Generate a scene."
   [& args]
-  (project-sphere/write-file 100 100 "test.ppm"))
+  (first-scene/write-file 400 200 "test.ppm"))
