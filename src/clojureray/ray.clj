@@ -122,7 +122,7 @@
   )
 
 (defn lighting
-  [material light point eyev normalv]
+  [material light point eyev normalv in-shadow]
   (let [effective-color (vector/times (:color material) (:intensity light))
         lightv (vector/normalize (vector/subtract (:position light) point))
         ambient (vector/scalar-multiplication (:ambient material) effective-color)
@@ -130,5 +130,7 @@
         diff-spec (compute-diffuse-specular lightv normalv eyev light light-dot-normal effective-color material)
         {diffuse  :diffuse
          specular :specular} diff-spec]
-    (vector/add (vector/add ambient diffuse) specular))
+    (if in-shadow [0.1 0.1 0.1]
+                  (vector/add (vector/add ambient diffuse) specular))
+    )
   )

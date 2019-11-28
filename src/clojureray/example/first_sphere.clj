@@ -21,7 +21,7 @@
         point (ray/position ray t)
         normal (ray/normal-at object point)
         eye (vector/negate (:direction ray))
-        color (ray/lighting (:material object) light point eye normal)
+        color (ray/lighting (:material object) light point eye normal false)
         ]
     color
     )

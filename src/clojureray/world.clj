@@ -82,7 +82,7 @@
         material (:material object)
         lights (:lights world)]
     (reduce add-or-identity
-            (mapv (fn [light] (ray/lighting material light point eyev normalv)) lights)
+            (mapv (fn [light] (ray/lighting material light point eyev normalv false)) lights)
             )
     )
   )

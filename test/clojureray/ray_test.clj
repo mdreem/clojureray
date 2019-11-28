@@ -181,7 +181,7 @@
       (let [light (shape/point-light [0.0 0.0 -10.0 1.0] [1.0 1.0 1.0])
             eyev [0.0 0.0 -1.0 0.0]
             normalv [0.0 0.0 -1.0 0.0]]
-        (is (aeq (ray/lighting mat light position eyev normalv)
+        (is (aeq (ray/lighting mat light position eyev normalv false)
                  [1.9 1.9 1.9]))
         ))
 
@@ -189,7 +189,7 @@
       (let [light (shape/point-light [0.0 0.0 -10.0 1.0] [1.0 1.0 1.0])
             eyev [0.0 p (- p) 0.0]
             normalv [0.0 0.0 -1.0 0.0]]
-        (is (aeq (ray/lighting mat light position eyev normalv)
+        (is (aeq (ray/lighting mat light position eyev normalv false)
                  [1.0 1.0 1.0]))
         ))
 
@@ -197,7 +197,7 @@
       (let [light (shape/point-light [0.0 10.0 -10.0 1.0] [1.0 1.0 1.0])
             eyev [0.0 0.0 -1.0 0.0]
             normalv [0.0 0.0 -1.0 0.0]]
-        (is (aeq (ray/lighting mat light position eyev normalv)
+        (is (aeq (ray/lighting mat light position eyev normalv false)
                  [0.7364 0.7364 0.7364]))
         ))
 
@@ -205,7 +205,7 @@
       (let [light (shape/point-light [0.0 10.0 -10.0 1.0] [1.0 1.0 1.0])
             eyev [0.0 (- p) (- p) 0.0]
             normalv [0.0 0.0 -1.0 0.0]]
-        (is (aeq (ray/lighting mat light position eyev normalv)
+        (is (aeq (ray/lighting mat light position eyev normalv false)
                  [1.6364 1.6364 1.6364]))
         ))
 
@@ -213,7 +213,7 @@
       (let [light (shape/point-light [0.0 0.0 10.0 1.0] [1.0 1.0 1.0])
             eyev [0.0 0.0 -1.0 0.0]
             normalv [0.0 0.0 -1.0 0.0]]
-        (is (aeq (ray/lighting mat light position eyev normalv)
+        (is (aeq (ray/lighting mat light position eyev normalv false)
                  [0.1 0.1 0.1]))
         ))
     )
