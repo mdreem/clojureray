@@ -148,3 +148,27 @@
       )
     )
   )
+
+(deftest view-transformations
+  (testing "The transformation matrix for the default orientation"
+    (is (= (transformation/view-transform [0.0 0.0 0.0 1.0] [0.0 0.0 -1.0 1.0] [0.0 1.0 0.0 0.0]) matrix/id-4))
+    )
+
+  (testing "The transformation matrix looking in positive z direction"
+    (is (aeq (transformation/view-transform [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 1.0] [0.0 1.0 0.0 0.0])
+             (transformation/scaling -1.0 1.0 -1.0)))
+    )
+
+  (testing "The view transformation moves the world"
+    (is (aeq (transformation/view-transform [0.0 0.0 8.0 1.0] [0.0 0.0 0.0 1.0] [0.0 1.0 0.0 0.0])
+             (transformation/translation 0.0 0.0 -8.0)))
+    )
+
+  (testing "An arbitrary view transformation"
+    (is (aeq (transformation/view-transform [1.0 3.0 2.0 1.0] [4.0 -2.0 8.0 1.0] [1.0 1.0 0.0 0.0])
+             [[-0.5070926 0.5070926 0.6761234 -2.3664319]
+              [0.76771593 0.6060915 0.1212183 -2.8284271]
+              [-0.35856858 0.5976143 -0.7171372 0.0]
+              [0.0 0.0 0.0 1.0]]))
+    )
+  )

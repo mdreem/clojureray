@@ -1,5 +1,6 @@
 (ns clojureray.transformation
-  (:require [clojureray.matrix :as matrix]))
+  (:require [clojureray.matrix :as matrix]
+            [clojureray.vector :as vector]))
 
 (defn translation
   [x y z]
@@ -46,4 +47,19 @@
 (defn set-transform
   [shape transformation]
   (assoc shape :transformation transformation)
+  )
+
+(defn view-transform
+  [from to up]
+  (let [forward (vector/normalize (vector/subtract to from))
+        upn (vector/normalize up)
+        left (vector/cross forward upn)
+        true_up (vector/cross left forward)
+        orientation [[(get left 0) (get left 1) (get left 2) 0.0]
+                     [(get true_up 0) (get true_up 1) (get true_up 2) 0.0]
+                     [(- (get forward 0)) (- (get forward 1)) (- (get forward 2)) 0.0]
+                     [0.0 0.0 0.0 1.0]]
+        translation (translation (- (get from 0)) (- (get from 1)) (- (get from 2)))]
+    (matrix/multiply orientation translation)
+    )
   )

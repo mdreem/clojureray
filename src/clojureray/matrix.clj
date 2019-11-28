@@ -2,10 +2,10 @@
   (:require [clojureray.vector :as vector]))
 
 (def id-4
-  [[1 0 0 0]
-   [0 1 0 0]
-   [0 0 1 0]
-   [0 0 0 1]])
+  [[1.0 0.0 0.0 0.0]
+   [0.0 1.0 0.0 0.0]
+   [0.0 0.0 1.0 0.0]
+   [0.0 0.0 0.0 1.0]])
 
 (defn transpose
   [matrix]
