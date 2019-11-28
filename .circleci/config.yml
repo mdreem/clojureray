@@ -3,20 +3,41 @@ jobs:
   build:
     docker:
       - image: circleci/clojure:lein-2.9.1
+
     environment:
       LEIN_ROOT: nbd
       JVM_OPTS: -Xmx3200m
+
+    working_directory: ~/repo
+
     steps:
       - checkout
+
       - restore_cache:
           key: clojureray-{{ checksum "project.clj" }}
+
       - run: lein deps
+
       - save_cache:
           paths:
             - ~/.m2
           key: clojureray-{{ checksum "project.clj" }}
-      - run: lein do test, uberjar
+
+      - run:
+          name: run tests
+          command: |
+              lein test2junit
+
+      - store_test_results:
+          path: target/test2junit
+
+      - run:
+          name: create jar
+          command: |
+              lein uberjar
+
       - store_artifacts:
-          path: target/uberjar/clojureray.jar
+          path: target/uberjar/*.jar
           destination: uberjar
+
 
