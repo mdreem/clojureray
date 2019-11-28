@@ -26,7 +26,7 @@
                                                                           [16 26 46 42]])))
   (testing "Test multiplying a matrix with id"
     (is (= (matrix/multiply matrix/id-4 [[1 2 3 4] [5 6 7 8] [9 8 7 6] [5 4 3 2]])
-           [[1 2 3 4] [5 6 7 8] [9 8 7 6] [5 4 3 2]])))
+           [[1.0 2.0 3.0 4.0] [5.0 6.0 7.0 8.0] [9.0 8.0 7.0 6.0] [5.0 4.0 3.0 2.0]])))
 
   (testing "Test multiplying a n x n-matrix with a n x 1-matrix"
     (is (= (matrix/multiply [[1 2 3 4] [5 6 7 8] [9 8 7 6] [5 4 3 2]] [[1] [2] [3] [4]])
