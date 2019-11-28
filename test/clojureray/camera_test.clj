@@ -3,7 +3,8 @@
             [clojureray.comparison :refer :all]
             [clojureray.camera :as camera]
             [clojureray.transformation :as transformation]
-            [clojureray.matrix :as matrix]))
+            [clojureray.matrix :as matrix]
+            [clojureray.world :as world]))
 
 (deftest ray-for-pixel-with-camera
   (let [c (camera/camera 201 101 (/ Math/PI 2))]
@@ -29,7 +30,7 @@
       (let [rotation (transformation/rotation_y (/ Math/PI 4))
             translation (transformation/translation 0.0 -2.0 5.0)
             transformation (matrix/multiply rotation translation)
-            transformed-camera (assoc c :transformation transformation)
+            transformed-camera (camera/set-transform c transformation)
             ray-pixel (camera/ray-for-pixel transformed-camera 100 50)
             {direction :direction
              origin    :origin} ray-pixel
@@ -37,6 +38,18 @@
         (is (aeq origin [0.0 2.0 -5.0 1.0]))
         (is (aeq direction [(/ p 2) 0.0 (- (/ p 2)) 0.0]))
         )
+      )
+    )
+  )
+
+(deftest render-scene
+  (testing "Rendering a world with a camera"
+    (let [w world/default-world
+          c (camera/camera 11 11 (/ Math/PI 2))
+          view-transform (transformation/view-transform [0.0 0.0 -5.0 1.0] [0.0 0.0 0.0 1.0] [0.0 1.0 0.0 0.0])
+          transformed-camera (camera/set-transform c view-transform)
+          image (camera/render transformed-camera w)]
+      (is (aeq (get-in image [5 5]) [0.38066 0.47583 0.2855]))
       )
     )
   )

@@ -1,6 +1,7 @@
 (ns clojureray.camera
   (:require [clojureray.matrix :as matrix]
             [clojureray.vector :as vector]
+            [clojureray.world :as world]
             [clojureray.ray :as ray]))
 
 (defn camera
@@ -19,6 +20,11 @@
      :pixel-size     pixel-size})
   )
 
+(defn set-transform
+  [camera transformation]
+  (assoc camera :transformation transformation)
+  )
+
 (defn ray-for-pixel
   [camera pixel-x pixel-y]
   (let [{pixel-size     :pixel-size
@@ -34,5 +40,20 @@
         origin (matrix/multiply-vector inverse-transform [0.0 0.0 0.0 1.0])
         direction (vector/normalize (vector/subtract pixel origin))]
     (ray/ray origin direction)
+    )
+  )
+
+(defn render
+  [camera world]
+  (let [{hsize :hsize
+         vsize :vsize} camera]
+    (mapv (fn [row]
+            (mapv (fn [column]
+                    (let [r (ray-for-pixel camera column row)
+                          c (world/color-at r world)]
+                      c)
+                    )
+                  (range hsize))
+            ) (range vsize))
     )
   )
