@@ -86,3 +86,12 @@
             )
     )
   )
+
+(defn color-at
+  [ray world]
+  (let [intersections (intersect-world world ray)
+        hit (first intersections)]
+    (if hit (let [computations (prepare-computations hit ray)
+                  shade (shade-hit world computations)] shade) [0.0 0.0 0.0])
+    )
+  )
