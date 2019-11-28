@@ -7,7 +7,7 @@
             [clojureray.matrix :as matrix]))
 
 (def light (shape/point-light [-10.0 10.0 -10.0 1.0] [0.5 0.5 0.5]))
-(def light-sec (shape/point-light [-10.0 -10.0 -10.0 1.0] [0.5 0.5 0.5]))
+(def light-sec (shape/point-light [10.0 10.0 -5.0 1.0] [0.5 0.5 0.5]))
 
 (def floor-material
   (-> shape/default-material
@@ -109,7 +109,7 @@
       (world/add-shape right)
       (world/add-shape left)
       (world/add-light light)
-      (world/add-light light-sec)
+      ;(world/add-light light-sec)
       )
   )
 

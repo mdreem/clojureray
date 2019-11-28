@@ -3,7 +3,8 @@
             [clojureray.comparison :refer :all]
             [clojureray.world :as world]
             [clojureray.shape :as shape]
-            [clojureray.ray :as ray]))
+            [clojureray.ray :as ray]
+            [clojureray.transformation :as transformation]))
 
 (deftest tests-helpers
 
@@ -81,25 +82,41 @@
   )
 
 (deftest shading-an-intersection
-  (let [shape (shape/sphere 1)]
-    (testing "Shading an intersection"
-      (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
-            intersection (ray/intersection 4.0 (first (:shapes world/default-world)))
-            comps (world/prepare-computations intersection r)
-            shade-hit (world/shade-hit world/default-world comps)]
-        (is (aeq shade-hit [0.38066 0.47583 0.2855]))
-        )
+  (testing "Shading an intersection"
+    (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
+          intersection (ray/intersection 4.0 (first (:shapes world/default-world)))
+          comps (world/prepare-computations intersection r)
+          shade-hit (world/shade-hit world/default-world comps)]
+      (is (aeq shade-hit [0.38066 0.47583 0.2855]))
       )
+    )
 
-    (testing "Shading an intersection from the inside"
-      (let [r (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])
-            light (shape/point-light [0.0 0.25 0.0 1.0] [1.0 1.0 1.0])
-            intersection (ray/intersection 0.5 (second (:shapes world/default-world)))
-            comps (world/prepare-computations intersection r)
-            world-light (assoc world/default-world :lights [light])
-            shade-hit (world/shade-hit world-light comps)]
-        (is (aeq shade-hit [0.90498 0.90498 0.90498]))
-        )
+  (testing "Shading an intersection from the inside"
+    (let [r (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])
+          light (shape/point-light [0.0 0.25 0.0 1.0] [1.0 1.0 1.0])
+          intersection (ray/intersection 0.5 (second (:shapes world/default-world)))
+          comps (world/prepare-computations intersection r)
+          world-light (assoc world/default-world :lights [light])
+          shade-hit (world/shade-hit world-light comps)]
+      (is (aeq shade-hit [0.1 0.1 0.1]))
+      )
+    )
+
+  (testing "Shading an intersection in shadow"
+    (let [s1 (shape/sphere 1)
+          s2 (-> (shape/sphere 1)
+                 (shape/set-transformation (transformation/translation 0.0 0.0 10.0))
+                 )
+          light (shape/point-light (world/point 0 0 -10) [1.0 1.0 1.0])
+          w (-> world/empty-world
+                (world/add-shape s1)
+                (world/add-shape s2)
+                (world/add-light light))
+          r (ray/ray (world/point 0 0 5) (world/ray-vector 0 0 1))
+          intersection (ray/intersection 4.0 s2)
+          comps (world/prepare-computations intersection r)
+          shade-hit (world/shade-hit w comps)]
+      (is (aeq shade-hit [0.1 0.1 0.1]))
       )
     )
   )
@@ -114,9 +131,8 @@
   (testing "The color with an intersection behind the ray"
     (let [ray (ray/ray [0.0 0.0 0.75 1.0] [0.0 0.0 -1.0 0.0])
           world-mat-1 (assoc-in world/default-world [:shapes 0 :material :ambient] 1.0)
-          world-mat-2 (assoc-in world-mat-1 [:shapes 1 :material :ambient] 1.0)
-          inner-material (get-in world-mat-2 [:shapes 1 :material :color])]
-      (is (= (world/color-at ray world-mat-2) inner-material))
+          world-mat-2 (assoc-in world-mat-1 [:shapes 1 :material :ambient] 1.0)]
+      (is (= (world/color-at ray world-mat-2) [0.1 0.1 0.1]))
       )
     )
   )

@@ -4,6 +4,8 @@
             [clojureray.transformation :as transformation]
             [clojureray.vector :as vector]))
 
+(def epsilon 0.00001)
+
 (defn ray-vector
   [x y z]
   [(double x) (double y) (double z) 0.0])
@@ -65,42 +67,14 @@
         eyev (vector/negate (:direction ray))
         normalv (ray/normal-at object position)
         inside (< (vector/dot normalv eyev) 0)
-        ]
-    {:t       t
-     :object  object
-     :point   position
-     :eyev    eyev
-     :normalv (if inside (vector/negate normalv) normalv)
-     :inside  inside}
-    )
-  )
-
-(defn- add-or-identity
-  ([v1 v2] (vector/add v1 v2))
-  ([v] v)
-  ([] nil)
-  )
-
-(defn shade-hit
-  [world comps]
-  (let [{object  :object
-         point   :point
-         eyev    :eyev
-         normalv :normalv} comps
-        material (:material object)
-        lights (:lights world)]
-    (reduce add-or-identity
-            (mapv (fn [light] (ray/lighting material light point eyev normalv false)) lights)
-            )
-    )
-  )
-
-(defn color-at
-  [ray world]
-  (let [intersections (intersect-world world ray)
-        hit (first intersections)]
-    (if hit (let [computations (prepare-computations hit ray)
-                  shade (shade-hit world computations)] shade) [0.0 0.0 0.0])
+        over-point (vector/add position (vector/scalar-multiplication epsilon normalv))]
+    {:t          t
+     :object     object
+     :point      position
+     :eyev       eyev
+     :normalv    (if inside (vector/negate normalv) normalv)
+     :inside     inside
+     :over-point over-point}
     )
   )
 
@@ -122,5 +96,35 @@
   (let [lights (:lights world)
         s (mapv (fn [light] (is-shadowed-with-light- world light point)) lights)]
     (every? true? s)
+    )
+  )
+
+(defn- add-or-identity
+  ([v1 v2] (vector/add v1 v2))
+  ([v] v)
+  ([] nil)
+  )
+
+(defn shade-hit
+  [world comps]
+  (let [{object     :object
+         point      :point
+         eyev       :eyev
+         normalv    :normalv
+         over-point :over-point} comps
+        material (:material object)
+        lights (:lights world)]
+    (reduce add-or-identity
+            (mapv (fn [light] (ray/lighting material light point eyev normalv (is-shadowed world over-point))) lights)
+            )
+    )
+  )
+
+(defn color-at
+  [ray world]
+  (let [intersections (intersect-world world ray)
+        hit (first intersections)]
+    (if hit (let [computations (prepare-computations hit ray)
+                  shade (shade-hit world computations)] shade) [0.0 0.0 0.0])
     )
   )
