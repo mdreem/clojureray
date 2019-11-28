@@ -48,7 +48,9 @@
   (let [{hsize :hsize
          vsize :vsize} camera]
     (mapv (fn [row]
+            (println "\nCurrent row: " row)
             (mapv (fn [column]
+                    (if (= (mod column 10) 0) (print "."))
                     (let [r (ray-for-pixel camera column row)
                           c (world/color-at r world)]
                       c)
