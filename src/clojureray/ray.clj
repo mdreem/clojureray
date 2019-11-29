@@ -1,7 +1,8 @@
 (ns clojureray.ray
   (:require [clojureray.vector :as vector]
             [clojureray.comparison :refer :all]
-            [clojureray.matrix :as matrix]))
+            [clojureray.matrix :as matrix]
+            [clojureray.util :as util]))
 
 (defn ray
   [origin direction]
@@ -70,9 +71,20 @@
     )
   )
 
+(defmethod intersect :plane [plane ray]
+  (let [{origin    :origin
+         direction :direction} ray
+        origin-y (get origin 1)
+        direction-y (get direction 1)]
+    (if (< (Math/abs direction-y) util/epsilon) nil
+                                                (intersection (- (/ origin-y direction-y)) plane)
+                                                )
+    )
+  )
+
 (defn- get-t
   [i]
-  (let [{t :t} i] t))
+  (:t i))
 
 (defn sort-intersections
   [intersections]
@@ -91,6 +103,10 @@
         object-normal (vector/subtract object-point [0.0 0.0 0.0 1.0])
         world-normal (matrix/multiply-vector (matrix/transpose inverse-transform) object-normal)]
     (vector/normalize (assoc world-normal 3 0.0)))
+  )
+
+(defmethod normal-at :plane [_ _]
+  (util/ray-vector 0 1 0)
   )
 
 (defn reflect

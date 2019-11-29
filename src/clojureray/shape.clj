@@ -49,6 +49,12 @@
    :material       default-material}
   )
 
+(def plane
+  {:shape          :plane
+   :transformation matrix/id-4
+   :material       default-material}
+  )
+
 (defn point-light
   [position intensity]
   {:position  position

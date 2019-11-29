@@ -4,7 +4,8 @@
             [clojureray.world :as world]
             [clojureray.shape :as shape]
             [clojureray.ray :as ray]
-            [clojureray.transformation :as transformation]))
+            [clojureray.transformation :as transformation]
+            [clojureray.util :as util]))
 
 (deftest tests-helpers
 
@@ -107,12 +108,12 @@
           s2 (-> (shape/sphere 1)
                  (shape/set-transformation (transformation/translation 0.0 0.0 10.0))
                  )
-          light (shape/point-light (world/point 0 0 -10) [1.0 1.0 1.0])
+          light (shape/point-light (util/point 0 0 -10) [1.0 1.0 1.0])
           w (-> world/empty-world
                 (world/add-shape s1)
                 (world/add-shape s2)
                 (world/add-light light))
-          r (ray/ray (world/point 0 0 5) (world/ray-vector 0 0 1))
+          r (ray/ray (util/point 0 0 5) (util/ray-vector 0 0 1))
           intersection (ray/intersection 4.0 s2)
           comps (world/prepare-computations intersection r)
           shade-hit (world/shade-hit w comps)]
@@ -140,19 +141,19 @@
 (deftest cast-shadows
   (let [w world/default-world]
     (testing "There is no shadow when nothing os collinear with point and light"
-      (is (= (world/is-shadowed w (world/point 0 10 0)) false))
+      (is (= (world/is-shadowed w (util/point 0 10 0)) false))
       )
 
     (testing "The shadow when an object is between the point and the light"
-      (is (= (world/is-shadowed w (world/point 10 -10 10)) true))
+      (is (= (world/is-shadowed w (util/point 10 -10 10)) true))
       )
 
     (testing "There is no shadow when an object is behind the light"
-      (is (= (world/is-shadowed w (world/point -20 20 -20)) false))
+      (is (= (world/is-shadowed w (util/point -20 20 -20)) false))
       )
 
     (testing "There is no shadow when an object is behind the point"
-      (is (= (world/is-shadowed w (world/point -2 2 -2)) false))
+      (is (= (world/is-shadowed w (util/point -2 2 -2)) false))
       )
     )
   )

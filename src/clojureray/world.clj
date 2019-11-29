@@ -2,17 +2,8 @@
   (:require [clojureray.ray :as ray]
             [clojureray.shape :as shape]
             [clojureray.transformation :as transformation]
-            [clojureray.vector :as vector]))
-
-(def epsilon 0.00001)
-
-(defn ray-vector
-  [x y z]
-  [(double x) (double y) (double z) 0.0])
-
-(defn point
-  [x y z]
-  [(double x) (double y) (double z) 1.0])
+            [clojureray.vector :as vector]
+            [clojureray.util :as util]))
 
 (def empty-world
   {:shapes []
@@ -67,7 +58,7 @@
         eyev (vector/negate (:direction ray))
         normalv (ray/normal-at object position)
         inside (< (vector/dot normalv eyev) 0)
-        over-point (vector/add position (vector/scalar-multiplication epsilon normalv))]
+        over-point (vector/add position (vector/scalar-multiplication util/epsilon normalv))]
     {:t          t
      :object     object
      :point      position
@@ -99,7 +90,7 @@
     )
   )
 
-(defn- add-or-identity
+(defn- add-colors
   ([v1 v2] (vector/add v1 v2))
   ([v] v)
   ([] nil)
@@ -114,7 +105,7 @@
          over-point :over-point} comps
         material (:material object)
         lights (:lights world)]
-    (reduce add-or-identity
+    (reduce add-colors
             (mapv (fn [light] (ray/lighting material light point eyev normalv (is-shadowed world over-point))) lights)
             )
     )

@@ -5,7 +5,8 @@
             [clojureray.comparison :refer :all]
             [clojureray.shape :as shape]
             [clojureray.matrix :as matrix]
-            [clojureray.world :as world]))
+            [clojureray.world :as world]
+            [clojureray.util :as util]))
 
 (deftest point-on-ray
   (let [point [2.0 3.0 4.0 1.0]
@@ -82,6 +83,41 @@
     )
   )
 
+(deftest intersections-with-plane
+
+  (testing "Intersect with a ray parallel to the plane"
+    (let [r (ray/ray (util/point 0 10 0) (util/ray-vector 0 0 1))]
+      (is (= (ray/intersect shape/plane r) nil))
+      )
+    )
+
+  (testing "Intersect with a coplanar ray"
+    (let [r (ray/ray (util/point 0 0 0) (util/ray-vector 0 0 1))]
+      (is (= (ray/intersect shape/plane r) nil))
+      )
+    )
+
+  (testing "A ray intersecting a plane from above"
+    (let [r (ray/ray (util/point 0 1 0) (util/ray-vector 0 -1 0))
+          intersection (ray/intersect shape/plane r)
+          {t      :t
+           object :object} intersection]
+      (is (aeq t 1.0))
+      (is (= object shape/plane))
+      )
+    )
+
+  (testing "A ray intersecting a plane from below"
+    (let [r (ray/ray (util/point 0 -1 0) (util/ray-vector 0 1 0))
+          intersection (ray/intersect shape/plane r)
+          {t      :t
+           object :object} intersection]
+      (is (aeq t 1.0))
+      (is (= object shape/plane))
+      )
+    )
+  )
+
 (deftest intersection-hits
   (let [sphere (shape/sphere 1.0)]
     (testing "The hit, when all intersections have positive t"
@@ -120,7 +156,6 @@
     )
   )
 
-
 (deftest transform-rays
   (let [r (ray/ray [1.0 2.0 3.0 1.0] [0.0 1.0 0.0 0.0])]
     (testing "Translating a ray"
@@ -137,7 +172,7 @@
     )
   )
 
-(deftest compute-normals-to-sphere
+(deftest compute-normals-to-shapes
   (testing "Test normal on sphere"
     (let [p (/ (Math/sqrt 3) 3)]
       (is (aeq (ray/normal-at (shape/sphere 1) [p p p 1.0])
@@ -159,6 +194,15 @@
       (is (aeq (ray/normal-at (transformation/set-transform (shape/sphere 1) combined) [0 p (- p) 1.0])
                [0.0 0.97014 -0.24254 0.0]))
       )
+    )
+
+  (testing "Test normal on plane"
+    (is (aeq (ray/normal-at shape/plane (util/point 0 0 0))
+             (util/ray-vector 0 1 0)))
+    (is (aeq (ray/normal-at shape/plane (util/point 10 0 -10))
+             (util/ray-vector 0 1 0)))
+    (is (aeq (ray/normal-at shape/plane (util/point -5 0 150))
+             (util/ray-vector 0 1 0)))
     )
   )
 
