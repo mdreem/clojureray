@@ -145,7 +145,7 @@
         diff-spec (compute-diffuse-specular lightv normalv eyev light light-dot-normal effective-color material)
         {diffuse  :diffuse
          specular :specular} diff-spec]
-    (if in-shadow [0.1 0.1 0.1]
+    (if in-shadow ambient
                   (vector/add (vector/add ambient diffuse) specular))
     )
   )

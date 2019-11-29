@@ -132,8 +132,9 @@
   (testing "The color with an intersection behind the ray"
     (let [ray (ray/ray [0.0 0.0 0.75 1.0] [0.0 0.0 -1.0 0.0])
           world-mat-1 (assoc-in world/default-world [:shapes 0 :material :ambient] 1.0)
-          world-mat-2 (assoc-in world-mat-1 [:shapes 1 :material :ambient] 1.0)]
-      (is (= (world/color-at ray world-mat-2) [0.1 0.1 0.1]))
+          world-mat-2 (assoc-in world-mat-1 [:shapes 1 :material :ambient] 1.0)
+          inner-material (get-in world-mat-2 [:shapes 1 :material :color])]
+      (is (= (world/color-at ray world-mat-2) inner-material))
       )
     )
   )
