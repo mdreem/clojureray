@@ -35,9 +35,11 @@ jobs:
           name: create jar
           command: |
               lein uberjar
+              mkdir -p target/uberjar/artifact
+              cp target/uberjar/clojureray*.jar target/uberjar/artifact
 
       - store_artifacts:
-          path: target/uberjar/*.jar
-          destination: uberjar
+          path: target/uberjar/artifact
+          destination: artifact
 
 
