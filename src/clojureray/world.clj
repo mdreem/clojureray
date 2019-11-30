@@ -103,7 +103,7 @@
 (declare reflected-color)
 
 (defn shade-hit
-  [world comps]
+  [world comps remaining]
   (let [{object     :object
          point      :point
          eyev       :eyev
@@ -115,32 +115,34 @@
                               (mapv (fn [light] (ray/lighting material object light point eyev normalv (is-shadowed world over-point)))
                                     lights)
                               )
-        reflected (reflected-color world comps)]
+        reflected (reflected-color world comps remaining)]
     (vector/add surface-color reflected)
     )
   )
 
 (defn color-at
-  [ray world]
+  [ray world remaining]
   (let [intersections (intersect-world world ray)
         hit (first intersections)]
     (if hit (let [computations (prepare-computations hit ray)
-                  shade (shade-hit world computations)] shade)
+                  shade (shade-hit world computations remaining)] shade)
             (util/color 0 0 0)
             )
     )
   )
 
 (defn reflected-color
-  [world comps]
+  [world comps remaining]
   (let [reflective (get-in comps [:object :material :reflective])]
-    (if (aeq reflective 0) (util/color 0 0 0)
-                           (let [{over-point :over-point
-                                  reflectv   :reflectv} comps
-                                 reflect-ray (ray/ray over-point reflectv)
-                                 color (color-at reflect-ray world)]
-                             (vector/scalar-multiplication reflective color)
-                             )
-                           )
+    (if (<= remaining 0) (util/color 0 0 0)
+                        (if (aeq reflective 0) (util/color 0 0 0)
+                                               (let [{over-point :over-point
+                                                      reflectv   :reflectv} comps
+                                                     reflect-ray (ray/ray over-point reflectv)
+                                                     color (color-at reflect-ray world (dec remaining))]
+                                                 (vector/scalar-multiplication reflective color)
+                                                 )
+                                               )
+                        )
     )
   )

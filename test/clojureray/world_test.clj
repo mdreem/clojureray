@@ -98,7 +98,7 @@
     (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
           intersection (ray/intersection 4.0 (first (:shapes world/default-world)))
           comps (world/prepare-computations intersection r)
-          shade-hit (world/shade-hit world/default-world comps)]
+          shade-hit (world/shade-hit world/default-world comps 1)]
       (is (aeq shade-hit [0.38066 0.47583 0.2855]))
       )
     )
@@ -109,7 +109,7 @@
           intersection (ray/intersection 0.5 (second (:shapes world/default-world)))
           comps (world/prepare-computations intersection r)
           world-light (assoc world/default-world :lights [light])
-          shade-hit (world/shade-hit world-light comps)]
+          shade-hit (world/shade-hit world-light comps 1)]
       (is (aeq shade-hit [0.1 0.1 0.1]))
       )
     )
@@ -127,7 +127,7 @@
           r (ray/ray (util/point 0 0 5) (util/ray-vector 0 0 1))
           intersection (ray/intersection 4.0 s2)
           comps (world/prepare-computations intersection r)
-          shade-hit (world/shade-hit w comps)]
+          shade-hit (world/shade-hit w comps 1)]
       (is (aeq shade-hit [0.1 0.1 0.1]))
       )
     )
@@ -136,7 +136,7 @@
 (deftest get-color-at
   (testing "The color when a ray misses"
     (let [ray (ray/ray [0.0 0.0 -5.0 1.0] [0.0 1.0 0.0 0.0])
-          color (world/color-at ray world/default-world)]
+          color (world/color-at ray world/default-world 1)]
       (is (= color [0.0 0.0 0.0]))
       )
     )
@@ -147,7 +147,7 @@
           world-mat-2 (assoc-in world-mat-1 [:shapes 1 :material :ambient] 1.0)
           color-inner-material-func (get-in world-mat-2 [:shapes 1 :material :color])
           color-inner-material (color-inner-material-func shape/default-material (util/point 0 0 0))
-          color (world/color-at ray world-mat-2)]
+          color (world/color-at ray world-mat-2 1)]
       (is (= color color-inner-material))
       )
     )
@@ -183,7 +183,7 @@
           w (assoc-in world/default-world [:shapes 0] shape-material)
           intersection (ray/intersection 1.0 shape-material)
           comps (world/prepare-computations intersection r)
-          color (world/reflected-color w comps)]
+          color (world/reflected-color w comps 1)]
       (is (= color (util/color 0 0 0)))
       )
     )
@@ -200,7 +200,7 @@
           inter (world/intersect-world w r)
           i (ray/hit inter)
           comps (world/prepare-computations i r)
-          color (world/reflected-color w comps)]
+          color (world/reflected-color w comps 1)]
       (is (aeq color (util/color 0.190332 0.237915 0.1427492)))
       )
     )
@@ -217,7 +217,7 @@
           inter (world/intersect-world w r)
           i (ray/hit inter)
           comps (world/prepare-computations i r)
-          color (world/shade-hit w comps)]
+          color (world/shade-hit w comps 1)]
       (is (aeq color (util/color 0.876757 0.924340 0.829174)))
       )
     )

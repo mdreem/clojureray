@@ -34,7 +34,8 @@
 (def floor-material
   (-> shape/default-material
       (shape/set-color stripe-pattern)
-      (shape/set-specular 0.0))
+      (shape/set-specular 0.0)
+      (shape/set-reflective 0.5))
   )
 
 (def floor

@@ -43,6 +43,8 @@
     )
   )
 
+(def max-reflections 5)
+
 (defn render
   [camera world]
   (let [{hsize :hsize
@@ -52,7 +54,7 @@
             (mapv (fn [column]
                     (if (= (mod column 10) 0) (print "."))
                     (let [r (ray-for-pixel camera column row)
-                          c (world/color-at r world)]
+                          c (world/color-at r world max-reflections)]
                       c)
                     )
                   (range hsize))
