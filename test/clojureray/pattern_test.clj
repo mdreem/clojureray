@@ -88,3 +88,16 @@
       )
     )
   )
+
+(deftest gradient-patterns
+  (let [white (util/color 1 1 1)
+        black (util/color 0 0 0)
+        gradient (pattern/gradient-pattern white black matrix/id-4)]
+    (testing "A stripe pattern is constant in y"
+      (is (aeq (gradient shape/plane (util/point 0 0 0)) white))
+      (is (aeq (gradient shape/plane (util/point 0.25 0 0)) (util/color 0.75 0.75 0.75)))
+      (is (aeq (gradient shape/plane (util/point 0.5 0 0)) (util/color 0.5 0.5 0.5)))
+      (is (aeq (gradient shape/plane (util/point 0.75 0 0)) (util/color 0.25 0.25 0.25)))
+      )
+    )
+  )
