@@ -101,3 +101,15 @@
       )
     )
   )
+
+(deftest ring-patterns
+  (let [white (util/color 1 1 1)
+        black (util/color 0 0 0)
+        ring (pattern/ring-pattern white black matrix/id-4)]
+    (testing "A stripe pattern is constant in y"
+      (is (aeq (ring shape/plane (util/point 0 0 0)) white))
+      (is (aeq (ring shape/plane (util/point 1 0 0)) black))
+      (is (aeq (ring shape/plane (util/point 0 0 1)) black))
+      )
+    )
+  )
