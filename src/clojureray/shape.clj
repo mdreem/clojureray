@@ -4,13 +4,13 @@
 
 
 (defn create-material
-  [color ambient diffuse specular shininess]
-  {:color     color
-   :ambient   ambient
-   :diffuse   diffuse
-   :specular  specular
-   :shininess shininess
-   }
+  [color ambient diffuse specular shininess reflective]
+  {:color      color
+   :ambient    (double ambient)
+   :diffuse    (double diffuse)
+   :specular   (double specular)
+   :shininess  (double shininess)
+   :reflective (double reflective)}
   )
 
 (defn set-color
@@ -30,11 +30,16 @@
 
 (defn set-ambient
   [material ambient]
-  (assoc material :ambient(double ambient))
+  (assoc material :ambient (double ambient))
+  )
+
+(defn set-reflective
+  [material reflective]
+  (assoc material :reflective (double reflective))
   )
 
 (def default-material
-  (create-material (util/constant-color 1 1 1) 0.1 0.9 0.9 200.0)
+  (create-material (util/constant-color 1 1 1) 0.1 0.9 0.9 200 0)
   )
 
 (defn set-material

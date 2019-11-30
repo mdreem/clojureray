@@ -80,6 +80,17 @@
       (is (= normalv [0.0 0.0 -1.0 0.0]))
       (is (= inside true)))
     )
+
+  (testing "Precomputing the reflection vector"
+    (let [p (/ (Math/sqrt 2) 2)
+          r (ray/ray (util/point 0 1 -1) (util/ray-vector 0 (- p) p))
+          intersection (ray/intersection (Math/sqrt 2) shape/plane)
+          computations (world/prepare-computations intersection r)
+          reflectv (:reflectv computations)
+          ]
+      (is (aeq reflectv (util/ray-vector 0 p p)))
+      )
+    )
   )
 
 (deftest shading-an-intersection
@@ -158,6 +169,40 @@
 
     (testing "There is no shadow when an object is behind the point"
       (is (= (world/is-shadowed w (util/point -2 2 -2)) false))
+      )
+    )
+  )
+
+(deftest reflected-colors
+  (testing "The reflected color of a nonreflective material"
+    (let [r (ray/ray (util/point 0 0 0) (util/ray-vector 0 0 1))
+          shape (get-in world/default-world [:shapes 0])
+          material (-> (:material shape)
+                       (shape/set-ambient 1))
+          shape-material (shape/set-material shape material)
+          w (assoc-in world/default-world [:shapes 0] shape-material)
+          intersection (ray/intersection 1.0 shape-material)
+          comps (world/prepare-computations intersection r)
+          color (world/reflected-color w comps)]
+      (is (= color (util/color 0 0 0)))
+      )
+    )
+
+  (testing "The reflected color for a reflective material"
+    (let [p (/ (Math/sqrt 2) 2)
+          s (-> shape/plane
+                (shape/set-material (-> shape/default-material
+                                        (shape/set-reflective 0.5)))
+                (shape/set-transformation (transformation/translation 0 -1 0)))
+          w (-> world/default-world
+                (world/add-shape s))
+          r (ray/ray (util/point 0 0 -3) (util/ray-vector 0 (- p) p))
+          inter (world/intersect-world w r)
+          i (ray/hit inter)
+          comps (world/prepare-computations i r)
+          color (world/reflected-color w comps)
+          ]
+      (is (aeq color (util/color 0.190332 0.237915 0.1427492)))
       )
     )
   )
