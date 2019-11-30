@@ -93,7 +93,7 @@
   (let [white (util/color 1 1 1)
         black (util/color 0 0 0)
         gradient (pattern/gradient-pattern white black matrix/id-4)]
-    (testing "A stripe pattern is constant in y"
+    (testing "A gradient linearly interpolates between colors"
       (is (aeq (gradient shape/plane (util/point 0 0 0)) white))
       (is (aeq (gradient shape/plane (util/point 0.25 0 0)) (util/color 0.75 0.75 0.75)))
       (is (aeq (gradient shape/plane (util/point 0.5 0 0)) (util/color 0.5 0.5 0.5)))
@@ -106,10 +106,31 @@
   (let [white (util/color 1 1 1)
         black (util/color 0 0 0)
         ring (pattern/ring-pattern white black matrix/id-4)]
-    (testing "A stripe pattern is constant in y"
+    (testing "A ring should extend in both x and z"
       (is (aeq (ring shape/plane (util/point 0 0 0)) white))
       (is (aeq (ring shape/plane (util/point 1 0 0)) black))
       (is (aeq (ring shape/plane (util/point 0 0 1)) black))
+      )
+    )
+  )
+
+(deftest checker-patterns
+  (let [white (util/color 1 1 1)
+        black (util/color 0 0 0)
+        checker (pattern/checker-pattern white black matrix/id-4)]
+    (testing "Checkers should repeat in x"
+      (is (aeq (checker shape/plane (util/point 0 0 0)) white))
+      (is (aeq (checker shape/plane (util/point 0.99 0 0)) white))
+      (is (aeq (checker shape/plane (util/point 1.01 0 0)) black))
+      (is (aeq (checker shape/plane (util/point 0 0 0)) white))
+      (is (aeq (checker shape/plane (util/point 0 0.99 0)) white))
+      (is (aeq (checker shape/plane (util/point 0 1.01 0)) black))
+      )
+
+    (testing "Checkers should repeat in z"
+      (is (aeq (checker shape/plane (util/point 0 0 0)) white))
+      (is (aeq (checker shape/plane (util/point 0 0 0.99 )) white))
+      (is (aeq (checker shape/plane (util/point 0 0 1.01 )) black))
       )
     )
   )
