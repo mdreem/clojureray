@@ -5,13 +5,14 @@
             [clojureray.world :as world]
             [clojureray.camera :as camera]
             [clojureray.matrix :as matrix]
+            [clojureray.pattern :as pattern]
             [clojureray.util :as util]))
 
 (def light (shape/point-light [-10.0 10.0 -10.0 1.0] [1.0 1.0 1.0]))
 
 (def floor-material
   (-> shape/default-material
-      (shape/set-color (util/constant-color 1.0 0.9 0.9))
+      (shape/set-color (pattern/stripe-pattern (util/color 1.0 0.9 0.9) (util/color 0.1 0.1 0.9)))
       (shape/set-specular 0.0))
   )
 
