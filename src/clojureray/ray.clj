@@ -72,8 +72,9 @@
   )
 
 (defmethod intersect :plane [plane ray]
-  (let [{origin    :origin
-         direction :direction} ray
+  (let [ray-transformed (transform ray (matrix/invert (:transformation plane)))
+        {origin    :origin
+         direction :direction} ray-transformed
         origin-y (get origin 1)
         direction-y (get direction 1)]
     (if (< (Math/abs direction-y) util/epsilon) nil

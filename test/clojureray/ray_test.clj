@@ -116,6 +116,19 @@
       (is (= object shape/plane))
       )
     )
+
+  (testing "A ray intersecting a plane at an angle"
+    (let [p (/ (Math/sqrt 2) 2)
+          r (ray/ray (util/point 0 0 -3) (util/ray-vector 0 (- p) p))
+          s (-> shape/plane
+                (shape/set-transformation (transformation/translation 0 -1 0)))
+          intersection (ray/intersect s r)
+          {t      :t
+           object :object} intersection]
+      (is (aeq t (Math/sqrt 2)))
+      (is (= object s))
+      )
+    )
   )
 
 (deftest intersection-hits
