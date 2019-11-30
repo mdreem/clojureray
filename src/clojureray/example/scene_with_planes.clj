@@ -51,6 +51,7 @@
                               (shape/set-color gradient-pattern)
                               (shape/set-specular 0.3)
                               (shape/set-diffuse 0.7)
+                              (shape/set-reflective 0.7)
                               )
                           )
       )
