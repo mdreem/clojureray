@@ -221,4 +221,24 @@
       (is (aeq color (util/color 0.876757 0.924340 0.829174)))
       )
     )
+
+  (testing "Parallel mirrors"
+    (let [lower (-> shape/plane
+                    (shape/set-material (-> shape/default-material
+                                            (shape/set-reflective 1)))
+                    (shape/set-transformation (transformation/translation 0 -1 0)))
+          upper (-> shape/plane
+                    (shape/set-material (-> shape/default-material
+                                            (shape/set-reflective 1)))
+                    (shape/set-transformation (transformation/translation 0 1 0)))
+          light (shape/point-light (util/point 0 0 0) (util/color 1 1 1))
+          w (-> world/default-world
+                (world/add-shape lower)
+                (world/add-shape upper)
+                (world/add-light light))
+          r (ray/ray (util/point 0 0 0) (util/ray-vector 0 1 0))
+          color (world/color-at r w 2)]
+      (is (aeq color (util/color 0.2 0.2 0.2)))
+      )
+    )
   )
