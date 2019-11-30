@@ -20,12 +20,17 @@
 
 (defn set-specular
   [material specular]
-  (assoc material :specular specular)
+  (assoc material :specular (double specular))
   )
 
 (defn set-diffuse
   [material diffuse]
-  (assoc material :diffuse diffuse)
+  (assoc material :diffuse (double diffuse))
+  )
+
+(defn set-ambient
+  [material ambient]
+  (assoc material :ambient(double ambient))
   )
 
 (def default-material

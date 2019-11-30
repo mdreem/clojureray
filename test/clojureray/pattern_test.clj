@@ -1,10 +1,12 @@
-(ns clojureray.patterm-test
+(ns clojureray.pattern-test
   (:require [clojure.test :refer :all]
             [clojureray.pattern :as pattern]
-            [clojureray.util :as util]))
+            [clojureray.util :as util]
+            [clojureray.shape :as shape]
+            [clojureray.ray :as ray]
+            [clojureray.comparison :refer :all]))
 
 (deftest stripe-patterns
-
   (let [white (util/color 1 1 1)
         black (util/color 0 0 0)
         stripe (pattern/stripe-pattern white black)]
@@ -27,6 +29,26 @@
       (is (= (stripe (util/point -0.1 0 0)) black))
       (is (= (stripe (util/point -1 0 0)) black))
       (is (= (stripe (util/point -1.1 0 0)) white))
+      )
+    )
+  )
+
+(deftest pattern-with-lighting
+  (testing "Lighting with a pattern applied"
+    (let [white (util/color 1 1 1)
+          black (util/color 0 0 0)
+          material (-> shape/default-material
+                       (shape/set-ambient 1)
+                       (shape/set-diffuse 0)
+                       (shape/set-specular 0)
+                       (shape/set-color (pattern/stripe-pattern white black)))
+          eyev (util/ray-vector 0 0 -1)
+          normalv (util/ray-vector 0 0 -1)
+          light (shape/point-light (util/point 0 0 -10) (util/color 1 1 1))
+          c1 (ray/lighting material light (util/point 0.9 0 0) eyev normalv false)
+          c2 (ray/lighting material light (util/point 1.1 0 0) eyev normalv false)]
+      (is (aeq c1 white))
+      (is (aeq c2 black))
       )
     )
   )
