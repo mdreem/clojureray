@@ -10,13 +10,20 @@
 
 (def light (shape/point-light [-10.0 10.0 -10.0 1.0] [1.0 1.0 1.0]))
 
+(def stripe-pattern (pattern/stripe-pattern
+                      (util/color 1.0 0.9 0.9)
+                      (util/color 0.1 0.1 0.9)
+                      (transformation/rotation_y (/ (Math/PI) 4))))
+
+(def gradient-pattern (pattern/gradient-pattern
+                        (util/color 0.5 1.0 0.1)
+                        (util/color 1.0 0.0 0.5)
+                        (transformation/rotation_y (/ (Math/PI) 4))))
+
+
 (def floor-material
   (-> shape/default-material
-      (shape/set-color (pattern/stripe-pattern
-                         (util/color 1.0 0.9 0.9)
-                         (util/color 0.1 0.1 0.9)
-                         (transformation/rotation_y (/ (Math/PI) 4)))
-                       )
+      (shape/set-color stripe-pattern)
       (shape/set-specular 0.0))
   )
 
@@ -30,7 +37,7 @@
   (-> (shape/sphere 1)
       (shape/set-transformation (transformation/translation -0.5 1.0 0.5))
       (shape/set-material (-> shape/default-material
-                              (shape/set-color (util/constant-color 0.5 1.0 0.1))
+                              (shape/set-color gradient-pattern)
                               (shape/set-specular 0.3)
                               (shape/set-diffuse 0.7)
                               )
