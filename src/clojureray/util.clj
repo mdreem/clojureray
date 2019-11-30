@@ -16,5 +16,5 @@
 
 (defn constant-color
   [r g b]
-  (fn [_] (color r g b))
+  (fn [_ _] (color r g b))
   )

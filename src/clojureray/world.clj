@@ -106,7 +106,7 @@
         material (:material object)
         lights (:lights world)]
     (reduce add-colors
-            (mapv (fn [light] (ray/lighting material light point eyev normalv (is-shadowed world over-point))) lights)
+            (mapv (fn [light] (ray/lighting material object light point eyev normalv (is-shadowed world over-point))) lights)
             )
     )
   )

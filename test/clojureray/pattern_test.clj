@@ -11,24 +11,24 @@
         black (util/color 0 0 0)
         stripe (pattern/stripe-pattern white black)]
     (testing "A stripe pattern is constant in y"
-      (is (= (stripe (util/point 0 0 0)) white))
-      (is (= (stripe (util/point 0 1 0)) white))
-      (is (= (stripe (util/point 0 2 0)) white))
+      (is (= (stripe shape/plane (util/point 0 0 0)) white))
+      (is (= (stripe shape/plane (util/point 0 1 0)) white))
+      (is (= (stripe shape/plane (util/point 0 2 0)) white))
       )
 
     (testing "A stripe pattern is constant in z"
-      (is (= (stripe (util/point 0 0 0)) white))
-      (is (= (stripe (util/point 0 0 1)) white))
-      (is (= (stripe (util/point 0 0 2)) white))
+      (is (= (stripe shape/plane (util/point 0 0 0)) white))
+      (is (= (stripe shape/plane (util/point 0 0 1)) white))
+      (is (= (stripe shape/plane (util/point 0 0 2)) white))
       )
 
     (testing "A stripe pattern alternates in x"
-      (is (= (stripe (util/point 0 0 0)) white))
-      (is (= (stripe (util/point 0.9 0 0)) white))
-      (is (= (stripe (util/point 1 0 0)) black))
-      (is (= (stripe (util/point -0.1 0 0)) black))
-      (is (= (stripe (util/point -1 0 0)) black))
-      (is (= (stripe (util/point -1.1 0 0)) white))
+      (is (= (stripe shape/plane (util/point 0 0 0)) white))
+      (is (= (stripe shape/plane (util/point 0.9 0 0)) white))
+      (is (= (stripe shape/plane (util/point 1 0 0)) black))
+      (is (= (stripe shape/plane (util/point -0.1 0 0)) black))
+      (is (= (stripe shape/plane (util/point -1 0 0)) black))
+      (is (= (stripe shape/plane (util/point -1.1 0 0)) white))
       )
     )
   )
@@ -45,8 +45,8 @@
           eyev (util/ray-vector 0 0 -1)
           normalv (util/ray-vector 0 0 -1)
           light (shape/point-light (util/point 0 0 -10) (util/color 1 1 1))
-          c1 (ray/lighting material light (util/point 0.9 0 0) eyev normalv false)
-          c2 (ray/lighting material light (util/point 1.1 0 0) eyev normalv false)]
+          c1 (ray/lighting material shape/plane light (util/point 0.9 0 0) eyev normalv false)
+          c2 (ray/lighting material shape/plane light (util/point 1.1 0 0) eyev normalv false)]
       (is (aeq c1 white))
       (is (aeq c2 black))
       )

@@ -135,7 +135,7 @@
           world-mat-1 (assoc-in world/default-world [:shapes 0 :material :ambient] 1.0)
           world-mat-2 (assoc-in world-mat-1 [:shapes 1 :material :ambient] 1.0)
           color-inner-material-func (get-in world-mat-2 [:shapes 1 :material :color])
-          color-inner-material (color-inner-material-func (util/point 0 0 0))
+          color-inner-material (color-inner-material-func shape/default-material (util/point 0 0 0))
           color (world/color-at ray world-mat-2)]
       (is (= color color-inner-material))
       )

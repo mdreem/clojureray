@@ -137,9 +137,9 @@
   )
 
 (defn lighting
-  [material light point eyev normalv in-shadow]
+  [material object light point eyev normalv in-shadow]
   (let [color-fun (:color material)
-        color (color-fun point)
+        color (color-fun object point)
         effective-color (vector/times color (:intensity light))
         lightv (vector/normalize (vector/subtract (:position light) point))
         ambient (vector/scalar-multiplication (:ambient material) effective-color)
