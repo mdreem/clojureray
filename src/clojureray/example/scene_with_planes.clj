@@ -12,7 +12,11 @@
 
 (def floor-material
   (-> shape/default-material
-      (shape/set-color (pattern/stripe-pattern (util/color 1.0 0.9 0.9) (util/color 0.1 0.1 0.9)))
+      (shape/set-color (pattern/stripe-pattern
+                         (util/color 1.0 0.9 0.9)
+                         (util/color 0.1 0.1 0.9)
+                         (transformation/rotation_y (/ (Math/PI) 4)))
+                       )
       (shape/set-specular 0.0))
   )
 
