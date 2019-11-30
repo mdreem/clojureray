@@ -18,7 +18,17 @@
 (def gradient-pattern (pattern/gradient-pattern
                         (util/color 0.5 1.0 0.1)
                         (util/color 1.0 0.0 0.5)
-                        (transformation/rotation_y (/ (Math/PI) 4))))
+                        matrix/id-4))
+
+(def ring-pattern (pattern/ring-pattern
+                    (util/color 0.5 1.0 0.1)
+                    (util/color 1.0 0.5 0.1)
+                    (transformation/scaling 0.2 0.2 0.2)))
+
+(def checker-pattern (pattern/checker-pattern
+                       (util/color 1.0 0.8 0.1)
+                       (util/color 0.1 0.8 1.0)
+                       (transformation/rotation_y (/ (Math/PI) 4))))
 
 
 (def floor-material
@@ -53,7 +63,7 @@
     (-> (shape/sphere 1)
         (shape/set-transformation transform)
         (shape/set-material (-> shape/default-material
-                                (shape/set-color (util/constant-color 0.5 1.0 0.1))
+                                (shape/set-color ring-pattern)
                                 (shape/set-specular 0.3)
                                 (shape/set-diffuse 0.7)
                                 )
@@ -70,7 +80,7 @@
     (-> (shape/sphere 1)
         (shape/set-transformation transform)
         (shape/set-material (-> shape/default-material
-                                (shape/set-color (util/constant-color 1.0 0.8 0.1))
+                                (shape/set-color checker-pattern)
                                 (shape/set-specular 0.3)
                                 (shape/set-diffuse 0.7)
                                 )
