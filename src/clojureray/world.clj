@@ -24,7 +24,7 @@
     ))
 
 (def default-world
-  (let [material (shape/create-material [0.8 1.0 0.6] 0.1 0.7 0.2 200.0)
+  (let [material (shape/create-material (util/constant-color 0.8 1.0 0.6) 0.1 0.7 0.2 200.0)
         sphere-1 (-> (shape/sphere 1)
                      (shape/set-material material))
         sphere-2 (-> (shape/sphere 1)
@@ -116,6 +116,6 @@
   (let [intersections (intersect-world world ray)
         hit (first intersections)]
     (if hit (let [computations (prepare-computations hit ray)
-                  shade (shade-hit world computations)] shade) [0.0 0.0 0.0])
+                  shade (shade-hit world computations)] shade) (util/color 0 0 0))
     )
   )

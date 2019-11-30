@@ -4,14 +4,15 @@
             [clojureray.file :as file]
             [clojureray.world :as world]
             [clojureray.camera :as camera]
-            [clojureray.matrix :as matrix]))
+            [clojureray.matrix :as matrix]
+            [clojureray.util :as util]))
 
 (def light (shape/point-light [-10.0 10.0 -10.0 1.0] [0.2 0.5 0.2]))
 (def light-sec (shape/point-light [10.0 10.0 -5.0 1.0] [0.2 0.2 0.2]))
 
 (def floor-material
   (-> shape/default-material
-      (shape/set-color [1.0 0.9 0.9])
+      (shape/set-color (util/constant-color 1 0.9 0.9))
       (shape/set-specular 0.0))
   )
 
@@ -58,7 +59,7 @@
   (-> (shape/sphere 1)
       (shape/set-transformation (transformation/translation -0.5 1.0 0.5))
       (shape/set-material (-> shape/default-material
-                              (shape/set-color [0.1 1.0 0.5])
+                              (shape/set-color (util/constant-color 0.1 1.0 0.5))
                               (shape/set-specular 0.3)
                               (shape/set-diffuse 0.7)
                               )
@@ -74,7 +75,7 @@
     (-> (shape/sphere 1)
         (shape/set-transformation transform)
         (shape/set-material (-> shape/default-material
-                                (shape/set-color [0.5 1.0 0.1])
+                                (shape/set-color (util/constant-color 0.5 1.0 0.1))
                                 (shape/set-specular 0.3)
                                 (shape/set-diffuse 0.7)
                                 )
@@ -91,7 +92,7 @@
     (-> (shape/sphere 1)
         (shape/set-transformation transform)
         (shape/set-material (-> shape/default-material
-                                (shape/set-color [1.0 0.8 0.1])
+                                (shape/set-color (util/constant-color 1.0 0.8 0.1))
                                 (shape/set-specular 0.3)
                                 (shape/set-diffuse 0.7)
                                 )

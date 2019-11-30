@@ -1,5 +1,6 @@
 (ns clojureray.shape
-  (:require [clojureray.matrix :as matrix]))
+  (:require [clojureray.matrix :as matrix]
+            [clojureray.util :as util]))
 
 
 (defn create-material
@@ -28,7 +29,7 @@
   )
 
 (def default-material
-  (create-material [1.0 1.0 1.0] 0.1 0.9 0.9 200.0)
+  (create-material (util/constant-color 1 1 1) 0.1 0.9 0.9 200.0)
   )
 
 (defn set-material
