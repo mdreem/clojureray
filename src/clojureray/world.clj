@@ -100,6 +100,8 @@
   ([] nil)
   )
 
+(declare reflected-color)
+
 (defn shade-hit
   [world comps]
   (let [{object     :object
@@ -108,10 +110,13 @@
          normalv    :normalv
          over-point :over-point} comps
         material (:material object)
-        lights (:lights world)]
-    (reduce add-colors
-            (mapv (fn [light] (ray/lighting material object light point eyev normalv (is-shadowed world over-point))) lights)
-            )
+        lights (:lights world)
+        surface-color (reduce add-colors
+                              (mapv (fn [light] (ray/lighting material object light point eyev normalv (is-shadowed world over-point)))
+                                    lights)
+                              )
+        reflected (reflected-color world comps)]
+    (vector/add surface-color reflected)
     )
   )
 

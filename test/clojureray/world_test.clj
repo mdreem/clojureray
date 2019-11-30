@@ -200,9 +200,25 @@
           inter (world/intersect-world w r)
           i (ray/hit inter)
           comps (world/prepare-computations i r)
-          color (world/reflected-color w comps)
-          ]
+          color (world/reflected-color w comps)]
       (is (aeq color (util/color 0.190332 0.237915 0.1427492)))
+      )
+    )
+
+  (testing "The reflected color for a reflective material with mixing"
+    (let [p (/ (Math/sqrt 2) 2)
+          s (-> shape/plane
+                (shape/set-material (-> shape/default-material
+                                        (shape/set-reflective 0.5)))
+                (shape/set-transformation (transformation/translation 0 -1 0)))
+          w (-> world/default-world
+                (world/add-shape s))
+          r (ray/ray (util/point 0 0 -3) (util/ray-vector 0 (- p) p))
+          inter (world/intersect-world w r)
+          i (ray/hit inter)
+          comps (world/prepare-computations i r)
+          color (world/shade-hit w comps)]
+      (is (aeq color (util/color 0.876757 0.924340 0.829174)))
       )
     )
   )
