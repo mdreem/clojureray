@@ -47,7 +47,7 @@
     (testing "Test prepare computations when intersection occurs on the outside")
     (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
           intersection (ray/intersection 4.0 shape)
-          computations (world/prepare-computations intersection r)
+          computations (world/prepare-computations intersection r [intersection])
           {t       :t
            object  :object
            point   :point
@@ -65,7 +65,7 @@
     (testing "Test prepare computations when intersection occurs on the inside")
     (let [r (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])
           intersection (ray/intersection 1.0 shape)
-          computations (world/prepare-computations intersection r)
+          computations (world/prepare-computations intersection r [intersection])
           {t       :t
            object  :object
            point   :point
@@ -85,7 +85,7 @@
     (let [p (/ (Math/sqrt 2) 2)
           r (ray/ray (util/point 0 1 -1) (util/ray-vector 0 (- p) p))
           intersection (ray/intersection (Math/sqrt 2) shape/plane)
-          computations (world/prepare-computations intersection r)
+          computations (world/prepare-computations intersection r [intersection])
           reflectv (:reflectv computations)
           ]
       (is (aeq reflectv (util/ray-vector 0 p p)))
@@ -97,7 +97,7 @@
   (testing "Shading an intersection"
     (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
           intersection (ray/intersection 4.0 (first (:shapes world/default-world)))
-          comps (world/prepare-computations intersection r)
+          comps (world/prepare-computations intersection r [intersection])
           shade-hit (world/shade-hit world/default-world comps 1)]
       (is (aeq shade-hit [0.38066 0.47583 0.2855]))
       )
@@ -107,7 +107,7 @@
     (let [r (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])
           light (shape/point-light [0.0 0.25 0.0 1.0] [1.0 1.0 1.0])
           intersection (ray/intersection 0.5 (second (:shapes world/default-world)))
-          comps (world/prepare-computations intersection r)
+          comps (world/prepare-computations intersection r [intersection])
           world-light (assoc world/default-world :lights [light])
           shade-hit (world/shade-hit world-light comps 1)]
       (is (aeq shade-hit [0.1 0.1 0.1]))
@@ -126,7 +126,7 @@
                 (world/add-light light))
           r (ray/ray (util/point 0 0 5) (util/ray-vector 0 0 1))
           intersection (ray/intersection 4.0 s2)
-          comps (world/prepare-computations intersection r)
+          comps (world/prepare-computations intersection r [intersection])
           shade-hit (world/shade-hit w comps 1)]
       (is (aeq shade-hit [0.1 0.1 0.1]))
       )
@@ -182,7 +182,7 @@
           shape-material (shape/set-material shape material)
           w (assoc-in world/default-world [:shapes 0] shape-material)
           intersection (ray/intersection 1.0 shape-material)
-          comps (world/prepare-computations intersection r)
+          comps (world/prepare-computations intersection r [intersection])
           color (world/reflected-color w comps 1)]
       (is (= color (util/color 0 0 0)))
       )
@@ -199,7 +199,7 @@
           r (ray/ray (util/point 0 0 -3) (util/ray-vector 0 (- p) p))
           inter (world/intersect-world w r)
           i (ray/hit inter)
-          comps (world/prepare-computations i r)
+          comps (world/prepare-computations i r [i])
           color (world/reflected-color w comps 1)]
       (is (aeq color (util/color 0.190332 0.237915 0.1427492)))
       )
@@ -216,7 +216,7 @@
           r (ray/ray (util/point 0 0 -3) (util/ray-vector 0 (- p) p))
           inter (world/intersect-world w r)
           i (ray/hit inter)
-          comps (world/prepare-computations i r)
+          comps (world/prepare-computations i r [i])
           color (world/shade-hit w comps 1)]
       (is (aeq color (util/color 0.876757 0.924340 0.829174)))
       )
@@ -239,6 +239,42 @@
           r (ray/ray (util/point 0 0 0) (util/ray-vector 0 1 0))
           color (world/color-at r w 2)]
       (is (aeq color (util/color 0.2 0.2 0.2)))
+      )
+    )
+  )
+
+(deftest refractions-at-various-intersections
+  (testing "Finding n1 and n2 at various intersections"
+    (let [r (ray/ray (util/point 0 0 -4) (util/ray-vector 0 0 1))
+          sphere-0 (-> (shape/sphere 1)
+                       (shape/set-material (-> shape/default-material
+                                               (shape/set-refractive-index 1.5)))
+                       (shape/set-transformation (transformation/scaling 2 2 2)))
+          sphere-1 (-> (shape/sphere 1)
+                       (shape/set-material (-> shape/default-material
+                                               (shape/set-refractive-index 2.0)))
+                       (shape/set-transformation (transformation/translation 0 0 -0.25)))
+          sphere-2 (-> (shape/sphere 1)
+                       (shape/set-material (-> shape/default-material
+                                               (shape/set-refractive-index 2.5)))
+                       (shape/set-transformation (transformation/translation 0 0 0.25)))
+          w (-> world/empty-world
+                (world/add-shape sphere-0)
+                (world/add-shape sphere-1)
+                (world/add-shape sphere-2))
+          intersections (world/intersect-world w r)
+          hit-0 (get (vec intersections) 0)
+          hit-1 (get (vec intersections) 1)
+          hit-2 (get (vec intersections) 2)
+          hit-3 (get (vec intersections) 3)
+          hit-4 (get (vec intersections) 4)
+          hit-5 (get (vec intersections) 5)]
+      (is (= (select-keys (world/prepare-computations hit-0 r intersections) [:n1 :n2]) {:n1 1.0 :n2 1.5}))
+      (is (= (select-keys (world/prepare-computations hit-1 r intersections) [:n1 :n2]) {:n1 1.5 :n2 2.0}))
+      (is (= (select-keys (world/prepare-computations hit-2 r intersections) [:n1 :n2]) {:n1 2.0 :n2 2.5}))
+      (is (= (select-keys (world/prepare-computations hit-3 r intersections) [:n1 :n2]) {:n1 2.5 :n2 2.5}))
+      (is (= (select-keys (world/prepare-computations hit-4 r intersections) [:n1 :n2]) {:n1 2.5 :n2 1.5}))
+      (is (= (select-keys (world/prepare-computations hit-5 r intersections) [:n1 :n2]) {:n1 1.5 :n2 1.0}))
       )
     )
   )

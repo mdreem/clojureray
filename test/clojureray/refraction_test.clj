@@ -55,5 +55,6 @@
     (is (= (refraction/process-intersections intersections hit-3) {:n1 2.5 :n2 2.5}))
     (is (= (refraction/process-intersections intersections hit-4) {:n1 2.5 :n2 1.5}))
     (is (= (refraction/process-intersections intersections hit-5) {:n1 1.5 :n2 1.0}))
+    (is (= (refraction/process-intersections [hit-0] hit-0) {:n1 1.0 :n2 1.5}))
     )
   )

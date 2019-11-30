@@ -4,6 +4,7 @@
             [clojureray.shape :as shape]
             [clojureray.transformation :as transformation]
             [clojureray.vector :as vector]
+            [clojureray.refraction :as refraction]
             [clojureray.util :as util]))
 
 (def empty-world
@@ -52,7 +53,7 @@
   )
 
 (defn prepare-computations
-  [intersection ray]
+  [intersection ray xs]
   (let [{t      :t
          object :object} intersection
         {direction :direction} ray
@@ -61,7 +62,9 @@
         normalv (ray/normal-at object position)
         inside (< (vector/dot normalv eyev) 0)
         over-point (vector/add position (vector/scalar-multiplication util/epsilon normalv))
-        reflectv (ray/reflect direction normalv)]
+        reflectv (ray/reflect direction normalv)
+        {n1 :n1
+         n2 :n2} (refraction/process-intersections xs intersection)]
     {:t          t
      :object     object
      :point      position
@@ -69,7 +72,9 @@
      :normalv    (if inside (vector/negate normalv) normalv)
      :inside     inside
      :over-point over-point
-     :reflectv   reflectv}
+     :reflectv   reflectv
+     :n1         n1
+     :n2         n2}
     )
   )
 
@@ -124,7 +129,7 @@
   [ray world remaining]
   (let [intersections (intersect-world world ray)
         hit (first intersections)]
-    (if hit (let [computations (prepare-computations hit ray)
+    (if hit (let [computations (prepare-computations hit ray [hit])
                   shade (shade-hit world computations remaining)] shade)
             (util/color 0 0 0)
             )
@@ -135,14 +140,14 @@
   [world comps remaining]
   (let [reflective (get-in comps [:object :material :reflective])]
     (if (<= remaining 0) (util/color 0 0 0)
-                        (if (aeq reflective 0) (util/color 0 0 0)
-                                               (let [{over-point :over-point
-                                                      reflectv   :reflectv} comps
-                                                     reflect-ray (ray/ray over-point reflectv)
-                                                     color (color-at reflect-ray world (dec remaining))]
-                                                 (vector/scalar-multiplication reflective color)
-                                                 )
-                                               )
-                        )
+                         (if (aeq reflective 0) (util/color 0 0 0)
+                                                (let [{over-point :over-point
+                                                       reflectv   :reflectv} comps
+                                                      reflect-ray (ray/ray over-point reflectv)
+                                                      color (color-at reflect-ray world (dec remaining))]
+                                                  (vector/scalar-multiplication reflective color)
+                                                  )
+                                                )
+                         )
     )
   )

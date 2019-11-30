@@ -30,16 +30,15 @@
   )
 
 (defn process-intersections
-  ([intersections hit containers]
-   (let [cur-intersection (first intersections)
-         object (:object cur-intersection)
+  ([[cur-intersection & intersections] hit containers]
+   (let [object (:object cur-intersection)
          hit-is-intersection (= hit cur-intersection)
          n1 (if hit-is-intersection (compute-n containers) nil)
          updated-containers (update-containers containers object)
          n2 (if hit-is-intersection (compute-n updated-containers) nil)]
      (if hit-is-intersection {:n1 n1
                               :n2 n2}
-                             (process-intersections (subvec intersections 1) hit updated-containers))
+                             (process-intersections intersections hit updated-containers))
      ))
   ([intersections hit]
    (process-intersections intersections hit []))
