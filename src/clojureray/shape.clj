@@ -4,14 +4,15 @@
 
 
 (defn create-material
-  [color ambient diffuse specular shininess reflective refractive-index]
+  [color ambient diffuse specular shininess reflective refractive-index transparency]
   {:color            color
    :ambient          (double ambient)
    :diffuse          (double diffuse)
    :specular         (double specular)
    :shininess        (double shininess)
    :reflective       (double reflective)
-   :refractive-index (double refractive-index)}
+   :refractive-index (double refractive-index)
+   :transparency     (double transparency)}
   )
 
 (defn set-color
@@ -39,13 +40,18 @@
   (assoc material :reflective (double reflective))
   )
 
+(defn set-transparency
+  [material transparency]
+  (assoc material :transparency (double transparency))
+  )
+
 (defn set-refractive-index
   [material refractive-index]
   (assoc material :refractive-index (double refractive-index))
   )
 
 (def default-material
-  (create-material (util/constant-color 1 1 1) 0.1 0.9 0.9 200 0 1)
+  (create-material (util/constant-color 1 1 1) 0.1 0.9 0.9 200 0 1 0)
   )
 
 (defn set-material

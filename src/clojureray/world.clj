@@ -26,7 +26,7 @@
     ))
 
 (def default-world
-  (let [material (shape/create-material (util/constant-color 0.8 1.0 0.6) 0.1 0.7 0.2 200 0 1)
+  (let [material (shape/create-material (util/constant-color 0.8 1.0 0.6) 0.1 0.7 0.2 200 0 1 0)
         sphere-1 (-> (shape/sphere 1)
                      (shape/set-material material))
         sphere-2 (-> (shape/sphere 1)

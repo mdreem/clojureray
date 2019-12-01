@@ -1,4 +1,6 @@
-(ns clojureray.refraction)
+(ns clojureray.refraction
+  (:require [clojureray.comparison :refer :all]
+            [clojureray.util :as util]))
 
 (defn at
   [coll e]
@@ -42,4 +44,15 @@
      ))
   ([intersections hit]
    (process-intersections intersections hit []))
+  )
+
+(defn refracted-color
+  [world comps remaining]
+  (let [transparency (get-in comps [:object :material :transparency])]
+    (println transparency)
+    (if ((<= remaining 0) or (aeq 0.0 transparency))
+      (util/color 0 0 0)
+      (util/color 1 1 1)
+      )
+    )
   )
