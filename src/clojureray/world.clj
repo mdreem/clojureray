@@ -62,19 +62,21 @@
         normalv (ray/normal-at object position)
         inside (< (vector/dot normalv eyev) 0)
         over-point (vector/add position (vector/scalar-multiplication util/epsilon normalv))
+        under-point (vector/subtract position (vector/scalar-multiplication util/epsilon normalv))
         reflectv (ray/reflect direction normalv)
         {n1 :n1
          n2 :n2} (refraction/process-intersections xs intersection)]
-    {:t          t
-     :object     object
-     :point      position
-     :eyev       eyev
-     :normalv    (if inside (vector/negate normalv) normalv)
-     :inside     inside
-     :over-point over-point
-     :reflectv   reflectv
-     :n1         n1
-     :n2         n2}
+    {:t           t
+     :object      object
+     :point       position
+     :eyev        eyev
+     :normalv     (if inside (vector/negate normalv) normalv)
+     :inside      inside
+     :over-point  over-point
+     :under-point under-point
+     :reflectv    reflectv
+     :n1          n1
+     :n2          n2}
     )
   )
 

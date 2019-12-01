@@ -5,7 +5,8 @@
             [clojureray.shape :as shape]
             [clojureray.ray :as ray]
             [clojureray.transformation :as transformation]
-            [clojureray.util :as util]))
+            [clojureray.util :as util]
+            [clojureray.vector :as vector]))
 
 (deftest tests-helpers
 
@@ -44,41 +45,43 @@
 
 (deftest prepare-computations-of-intersections
   (let [shape (shape/sphere 1)]
-    (testing "Test prepare computations when intersection occurs on the outside")
-    (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
-          intersection (ray/intersection 4.0 shape)
-          computations (world/prepare-computations intersection r [intersection])
-          {t       :t
-           object  :object
-           point   :point
-           eyev    :eyev
-           normalv :normalv
-           inside  :inside} computations
-          ]
-      (is (= t 4.0))
-      (is (= object shape))
-      (is (= point [0.0 0.0 -1.0 1.0]))
-      (is (= eyev [0.0 0.0 -1.0 0.0]))
-      (is (= normalv [0.0 0.0 -1.0 0.0]))
-      (is (= inside false)))
+    (testing "Test prepare computations when intersection occurs on the outside"
+      (let [r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
+            intersection (ray/intersection 4.0 shape)
+            computations (world/prepare-computations intersection r [intersection])
+            {t       :t
+             object  :object
+             point   :point
+             eyev    :eyev
+             normalv :normalv
+             inside  :inside} computations
+            ]
+        (is (= t 4.0))
+        (is (= object shape))
+        (is (= point [0.0 0.0 -1.0 1.0]))
+        (is (= eyev [0.0 0.0 -1.0 0.0]))
+        (is (= normalv [0.0 0.0 -1.0 0.0]))
+        (is (= inside false)))
+      )
 
-    (testing "Test prepare computations when intersection occurs on the inside")
-    (let [r (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])
-          intersection (ray/intersection 1.0 shape)
-          computations (world/prepare-computations intersection r [intersection])
-          {t       :t
-           object  :object
-           point   :point
-           eyev    :eyev
-           normalv :normalv
-           inside  :inside} computations
-          ]
-      (is (= t 1.0))
-      (is (= object shape))
-      (is (= point [0.0 0.0 1.0 1.0]))
-      (is (= eyev [0.0 0.0 -1.0 0.0]))
-      (is (= normalv [0.0 0.0 -1.0 0.0]))
-      (is (= inside true)))
+    (testing "Test prepare computations when intersection occurs on the inside"
+      (let [r (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])
+            intersection (ray/intersection 1.0 shape)
+            computations (world/prepare-computations intersection r [intersection])
+            {t       :t
+             object  :object
+             point   :point
+             eyev    :eyev
+             normalv :normalv
+             inside  :inside} computations
+            ]
+        (is (= t 1.0))
+        (is (= object shape))
+        (is (= point [0.0 0.0 1.0 1.0]))
+        (is (= eyev [0.0 0.0 -1.0 0.0]))
+        (is (= normalv [0.0 0.0 -1.0 0.0]))
+        (is (= inside true)))
+      )
     )
 
   (testing "Precomputing the reflection vector"
@@ -91,6 +94,30 @@
       (is (aeq reflectv (util/ray-vector 0 p p)))
       )
     )
+
+  (testing "The under point is offset below the surface"
+    (let [shape (-> (shape/sphere 1)
+                    (shape/set-transformation (transformation/translation 0 0 1)))
+          r (ray/ray [0.0 0.0 -5.0 1.0] [0.0 0.0 1.0 0.0])
+          intersection (ray/intersection 5.0 shape)
+          computations (world/prepare-computations intersection r [intersection])
+          {t           :t
+           object      :object
+           point       :point
+           eyev        :eyev
+           normalv     :normalv
+           inside      :inside
+           over-point  :over-point
+           under-point :under-point} computations
+          ]
+      (is (= object shape))
+      (is (= point [0.0 0.0 0.0 1.0]))
+      (is (= eyev [0.0 0.0 -1.0 0.0]))
+      (is (= normalv [0.0 0.0 -1.0 0.0]))
+      (is (= inside false))
+      (is (> (get under-point 2) (get point 2)))
+      (is (> (get under-point 2) (/ util/epsilon 2)))
+      ))
   )
 
 (deftest shading-an-intersection
