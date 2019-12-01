@@ -76,7 +76,7 @@
 
   (testing "The refracted color at the maximum recursive depth"
     (let [material (-> shape/default-material
-                       (shape/set-transparency 10.0)
+                       (shape/set-transparency 1.0)
                        (shape/set-refractive-index 1.5))
           w (assoc-in world/default-world [:shapes 0 :material] material)
           shape (get-in w [:shapes 0])
@@ -84,6 +84,24 @@
           xs [(ray/intersection 4.0 shape) (ray/intersection 6.0 shape)]
           comps (world/prepare-computations (get xs 0) r xs)
           c (refraction/refracted-color w comps 0)
+          ]
+      (is (= c (util/color 0 0 0)))
+      )
+    )
+
+  (testing "The refracted color under total reflection"
+    (let [p (/ (Math/sqrt 2) 2)
+          material (-> shape/default-material
+                       (shape/set-transparency 1.0)
+                       (shape/set-refractive-index 1.5))
+          w (assoc-in world/default-world [:shapes 0 :material] material)
+          shape (get-in w [:shapes 0])
+          r (ray/ray (util/point 0 0 p) (util/ray-vector 0 1 0))
+          i-0 (ray/intersection (- p) shape)
+          i-1 (ray/intersection p shape)
+          xs [i-0 i-1]
+          comps (world/prepare-computations i-1 r xs)
+          c (refraction/refracted-color w comps 5)
           ]
       (is (= c (util/color 0 0 0)))
       )

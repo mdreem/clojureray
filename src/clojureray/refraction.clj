@@ -1,6 +1,7 @@
 (ns clojureray.refraction
   (:require [clojureray.comparison :refer :all]
-            [clojureray.util :as util]))
+            [clojureray.util :as util]
+            [clojureray.vector :as vector]))
 
 (defn at
   [coll e]
@@ -48,9 +49,17 @@
 
 (defn refracted-color
   [world comps remaining]
-  (let [transparency (get-in comps [:object :material :transparency])]
-    (println transparency)
-    (if ((<= remaining 0) or (aeq 0.0 transparency))
+  (let [{object  :object
+         n1      :n1
+         n2      :n2
+         eyev    :eyev
+         normalv :normalv} comps
+        transparency (get-in object [:material :transparency])
+        n-ratio (/ n1 n2)
+        cos-i (vector/dot eyev normalv)
+        sin2-t (* (* n-ratio n-ratio) (- 1 (* cos-i cos-i)))]
+    (println "sin2-t" sin2-t)
+    (if (or (<= remaining 0) (aeq 0.0 transparency) (> sin2-t 1.0))
       (util/color 0 0 0)
       (util/color 1 1 1)
       )
