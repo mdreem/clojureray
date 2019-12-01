@@ -8,6 +8,29 @@
             [clojureray.matrix :as matrix]
             [clojureray.transformation :as transformation]))
 
+(deftest test-patterns
+
+  (testing "The test pattern returns correct values"
+    (let [test-pattern (pattern/test-pattern matrix/id-4)]
+      (is (aeq (test-pattern shape/plane (util/point 1 2 3)) (util/color 1 2 3)))
+      )
+    )
+
+  (testing "The scaled test pattern returns correct values"
+    (let [test-pattern (pattern/test-pattern (transformation/scaling 2 2 2))]
+      (is (aeq (test-pattern shape/plane (util/point 2 3 4)) (util/color 1 1.5 2)))
+      )
+    )
+
+  (testing "The test pattern returns correct values on scalred shape"
+    (let [test-pattern (pattern/test-pattern matrix/id-4)]
+      (is (aeq (test-pattern (-> shape/plane
+                                 (shape/set-transformation (transformation/scaling 2 2 2)))
+                             (util/point 2 3 4)) (util/color 1 1.5 2)))
+      )
+    )
+  )
+
 (deftest stripe-patterns
   (let [white (util/color 1 1 1)
         black (util/color 0 0 0)
@@ -129,8 +152,8 @@
 
     (testing "Checkers should repeat in z"
       (is (aeq (checker shape/plane (util/point 0 0 0)) white))
-      (is (aeq (checker shape/plane (util/point 0 0 0.99 )) white))
-      (is (aeq (checker shape/plane (util/point 0 0 1.01 )) black))
+      (is (aeq (checker shape/plane (util/point 0 0 0.99)) white))
+      (is (aeq (checker shape/plane (util/point 0 0 1.01)) black))
       )
     )
   )

@@ -3,6 +3,18 @@
             [clojureray.matrix :as matrix]
             [clojureray.vector :as vector]))
 
+(defn test-pattern
+  [t]
+  (let [inverse (matrix/invert t)]
+    (fn [object p] (let [object-transform (:transformation object)
+                         object-space (matrix/multiply-vector (matrix/invert object-transform) p)
+                         pattern-space (matrix/multiply-vector inverse object-space)]
+                     (util/color (get pattern-space 0) (get pattern-space 1) (get pattern-space 2))
+                     )
+      )
+    )
+  )
+
 (defn stripe-pattern
   [color1 color2 t]
   (let [inverse (matrix/invert t)]
