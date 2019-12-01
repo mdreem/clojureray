@@ -89,12 +89,13 @@
 
 (defn sort-intersections
   [intersections]
-  (sort-by get-t (filter (fn [i] (>= (get-t i) 0)) intersections))
+  (sort-by get-t intersections)
   )
 
 (defn hit
   [intersections]
-  (first (sort-intersections intersections)))
+  (first (filter (fn [i] (>= (get-t i) 0)) (sort-intersections intersections)))
+  )
 
 (defmulti normal-at (fn [shape _] (:shape shape)))
 

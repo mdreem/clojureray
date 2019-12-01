@@ -59,8 +59,9 @@
         {direction :direction} ray
         position (ray/position ray t)
         eyev (vector/negate direction)
-        normalv (ray/normal-at object position)
-        inside (< (vector/dot normalv eyev) 0)
+        pre-normalv (ray/normal-at object position)
+        inside (< (vector/dot pre-normalv eyev) 0)
+        normalv (if inside (vector/negate pre-normalv) pre-normalv)
         over-point (vector/add position (vector/scalar-multiplication util/epsilon normalv))
         under-point (vector/subtract position (vector/scalar-multiplication util/epsilon normalv))
         reflectv (ray/reflect direction normalv)
@@ -70,7 +71,7 @@
      :object      object
      :point       position
      :eyev        eyev
-     :normalv     (if inside (vector/negate normalv) normalv)
+     :normalv     normalv
      :inside      inside
      :over-point  over-point
      :under-point under-point
@@ -108,6 +109,7 @@
   )
 
 (declare reflected-color)
+(declare refracted-color)
 
 (defn shade-hit
   [world comps remaining]
@@ -122,16 +124,17 @@
                               (mapv (fn [light] (ray/lighting material object light point eyev normalv (is-shadowed world over-point)))
                                     lights)
                               )
-        reflected (reflected-color world comps remaining)]
-    (vector/add surface-color reflected)
+        reflected (reflected-color world comps remaining)
+        refracted (refracted-color world comps remaining)]
+    (vector/add (vector/add surface-color reflected) refracted)
     )
   )
 
 (defn color-at
   [ray world remaining]
   (let [intersections (intersect-world world ray)
-        hit (first intersections)]
-    (if hit (let [computations (prepare-computations hit ray [hit])
+        hit (ray/hit intersections)]
+    (if hit (let [computations (prepare-computations hit ray intersections)
                   shade (shade-hit world computations remaining)] shade)
             (util/color 0 0 0)
             )
@@ -151,5 +154,29 @@
                                                   )
                                                 )
                          )
+    )
+  )
+
+(defn refracted-color
+  [world comps remaining]
+  (let [{object      :object
+         n1          :n1
+         n2          :n2
+         eyev        :eyev
+         normalv     :normalv
+         under-point :under-point} comps
+        transparency (get-in object [:material :transparency])
+        n-ratio (/ n1 n2)
+        cos-i (vector/dot eyev normalv)
+        sin2-t (* (* n-ratio n-ratio) (- 1 (* cos-i cos-i)))]
+    (if (or (<= remaining 0) (aeq 0.0 transparency) (> sin2-t 1.0))
+      (util/color 0 0 0)
+      (let [cos-t (Math/sqrt (- 1.0 sin2-t))
+            refracted-direction (vector/subtract (vector/scalar-multiplication (- (* n-ratio cos-i) cos-t) normalv)
+                                                 (vector/scalar-multiplication n-ratio eyev))
+            refract-ray (ray/ray under-point refracted-direction)]
+        (vector/scalar-multiplication transparency (color-at refract-ray world (dec remaining)))
+        )
+      )
     )
   )
