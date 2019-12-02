@@ -132,12 +132,12 @@
 
   (testing "Shading an intersection from the inside"
     (let [r (ray/ray [0.0 0.0 0.0 1.0] [0.0 0.0 1.0 0.0])
-          light (shape/point-light [0.0 0.25 0.0 1.0] [1.0 1.0 1.0])
+          light (shape/point-light (util/point 0 0.25 0) (util/color 1 1 1))
           intersection (ray/intersection 0.5 (second (:shapes world/default-world)))
-          comps (world/prepare-computations intersection r [intersection])
+          comps (world/prepare-computations intersection r [])
           world-light (assoc world/default-world :lights [light])
-          shade-hit (world/shade-hit world-light comps 1)]
-      (is (aeq shade-hit [0.1 0.1 0.1]))
+          shade-hit (world/shade-hit world-light comps 0)]
+      (is (aeq shade-hit [0.90498 0.90498 0.90498]))
       )
     )
 
@@ -265,7 +265,7 @@
                 (world/add-light light))
           r (ray/ray (util/point 0 0 0) (util/ray-vector 0 1 0))
           color (world/color-at r w 2)]
-      (is (aeq color (util/color 0.2 0.2 0.2)))
+      (is (aeq color (util/color 2.0 2.0 2.0)))
       )
     )
   )

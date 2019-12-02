@@ -7,7 +7,8 @@
             [clojureray.world :as world]
             [clojureray.util :as util]
             [clojureray.pattern :as pattern]
-            [clojureray.transformation :as transformation]))
+            [clojureray.transformation :as transformation]
+            [clojureray.matrix :as matrix]))
 
 (deftest check-at
   (testing "Find elemend at"
@@ -110,7 +111,7 @@
 
   (testing "The refracted color with a refracted ray"
     (let [material-0 (-> shape/default-material
-                         (shape/set-color (pattern/test-pattern (clojureray.transformation/scaling 1 2 3)))
+                         (shape/set-color (pattern/test-pattern matrix/id-4))
                          (shape/set-ambient 1.0))
           material-1 (-> shape/default-material
                          (shape/set-transparency 1.0)
@@ -127,8 +128,8 @@
           i-3 (ray/intersection 0.9899 shape-0)
           xs [i-0 i-1 i-2 i-3]
           comps (world/prepare-computations i-2 r xs)
-          c (world/refracted-color w comps 5)]
-      (is (aeq c (util/color 0 0.99888 0.04725)))
+          c (world/refracted-color w comps 1)]
+      (is (aeq c (util/color 0 0.99888 0.047219)))
       )
     )
 
