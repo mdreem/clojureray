@@ -20,6 +20,11 @@
                         (util/color 1.0 0.0 0.5)
                         matrix/id-4))
 
+(def gradient-pattern-1 (pattern/gradient-pattern
+                        (util/color 0.5 0.5 0.5)
+                        (util/color 1.0 0.0 0.5)
+                        matrix/id-4))
+
 (def ring-pattern (pattern/ring-pattern
                     (util/color 0.5 1.0 0.1)
                     (util/color 1.0 0.5 0.1)
@@ -52,6 +57,23 @@
                               (shape/set-specular 0.3)
                               (shape/set-diffuse 0.7)
                               (shape/set-reflective 0.7)
+                              (shape/set-transparency 0.8)
+                              (shape/set-refractive-index 1.5)
+                              )
+                          )
+      )
+  )
+
+(def middle-back
+  (-> (shape/sphere 1)
+      (shape/set-transformation (transformation/translation -0.5 1.0 1.5))
+      (shape/set-material (-> shape/default-material
+                              (shape/set-color gradient-pattern-1)
+                              (shape/set-specular 0.5)
+                              (shape/set-diffuse 0.7)
+                              (shape/set-reflective 0.7)
+                              (shape/set-transparency 0.6)
+                              (shape/set-refractive-index 1.3)
                               )
                           )
       )
@@ -95,6 +117,7 @@
   (-> world/empty-world
       (world/add-shape floor)
       (world/add-shape middle)
+      (world/add-shape middle-back)
       (world/add-shape right)
       (world/add-shape left)
       (world/add-light light)
