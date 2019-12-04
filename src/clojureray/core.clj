@@ -1,6 +1,6 @@
 (ns clojureray.core
   (:gen-class)
-  (:require [clojureray.example.scene-with-planes :as scene]))
+  (:require [clojureray.example.scene-with-refractions :as scene]))
 
 (defn -main
   "Generate a scene."
