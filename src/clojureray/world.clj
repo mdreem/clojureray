@@ -119,14 +119,21 @@
          normalv    :normalv
          over-point :over-point} comps
         material (:material object)
+        {reflective   :reflective
+         transparency :transparency} material
         lights (:lights world)
+        shadowed (is-shadowed world over-point)
         surface-color (reduce add-colors
-                              (mapv (fn [light] (ray/lighting material object light point eyev normalv (is-shadowed world over-point)))
+                              (mapv (fn [light] (ray/lighting material object light point eyev normalv shadowed))
                                     lights)
                               )
         reflected (reflected-color world comps remaining)
         refracted (refracted-color world comps remaining)]
-    (vector/add (vector/add surface-color reflected) refracted)
+    (if (and (> reflective 0) (> transparency 0))
+      (let [reflectance (refraction/schlick comps)]
+        (vector/add (vector/add surface-color (vector/scalar-multiplication reflectance reflected)) (vector/scalar-multiplication (- 1 reflectance) refracted)))
+      (vector/add (vector/add surface-color reflected) refracted)
+      )
     )
   )
 

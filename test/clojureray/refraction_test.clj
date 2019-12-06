@@ -194,4 +194,31 @@
           reflectance (refraction/schlick comps)]
       (is (aeq reflectance 0.48873)))
     )
+
+  (testing "shade-hit with a reflective, transparent material"
+    (let [p (/ (Math/sqrt 2) 2)
+          material-floor (-> shape/default-material
+                             (shape/set-reflective 0.5)
+                             (shape/set-transparency 0.5)
+                             (shape/set-refractive-index 1.5))
+          material-sphere (-> shape/default-material
+                              (shape/set-color (util/constant-color 1 0 0))
+                              (shape/set-ambient 0.5))
+          floor (-> shape/plane
+                    (shape/set-transformation (transformation/translation 0 -1 0))
+                    (shape/set-material material-floor))
+          ball (-> (shape/sphere 1)
+                   (shape/set-transformation (transformation/translation 0 -3.5 -0.5))
+                   (shape/set-material material-sphere))
+          w (-> world/default-world
+                (world/add-shape floor)
+                (world/add-shape ball))
+          r (ray/ray (util/point 0 0 -3) (util/ray-vector 0 (- p) p))
+          intersection (ray/intersection (Math/sqrt 2) floor)
+          xs [intersection]
+          comps (world/prepare-computations intersection r xs)
+          c (world/shade-hit w comps 5)]
+      (is (aeq c (util/color 0.93391 0.69643 0.69243)))
+      )
+    )
   )
