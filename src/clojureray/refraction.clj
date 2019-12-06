@@ -1,5 +1,6 @@
 (ns clojureray.refraction
-  (:require [clojureray.comparison :refer :all]))
+  (:require [clojureray.comparison :refer :all]
+            [clojureray.vector :as vector]))
 
 (defn at
   [coll e]
@@ -49,4 +50,32 @@
 (defn process-intersections
   [intersections hit]
   (process-intersections-containers- intersections hit [])
+  )
+
+(defn- schlick-r
+  [n1 n2 cos]
+  (let [r0 (* (/ (- n1 n2) (+ n1 n2)) (/ (- n1 n2) (+ n1 n2)))
+        cos-pow (Math/pow (- 1 cos) 5)]
+    (+ r0 (* (- 1.0 r0) cos-pow))
+    )
+  )
+
+(defn schlick
+  [comps]
+  (let [{eyev    :eyev
+         normalv :normalv
+         n1      :n1
+         n2      :n2} comps
+        c (vector/dot eyev normalv)]
+    (if (> n1 n2)
+      (let [n (/ n1 n2)
+            sin2-t (* (* n n) (- 1 (* c c)))]
+        (if (> sin2-t 1.0)
+          1.0
+          (schlick-r n1 n2 (Math/sqrt (- 1.0 sin2-t)))
+          )
+        )
+      (schlick-r n1 n2 c)
+      )
+    )
   )

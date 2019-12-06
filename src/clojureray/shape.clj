@@ -72,6 +72,17 @@
    :material       default-material}
   )
 
+(def glass-sphere
+  (-> (sphere 1)
+      (set-material
+        (-> default-material
+            (set-transparency 1)
+            (set-refractive-index 1.5)
+            )
+        )
+      )
+  )
+
 (def plane
   {:shape          :plane
    :transformation matrix/id-4

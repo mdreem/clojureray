@@ -159,3 +159,39 @@
       )
     )
   )
+
+(deftest compute-schlick
+
+  (testing "The Schlick approximation under total internal reflection"
+    (let [p (/ (Math/sqrt 2) 2)
+          shape shape/glass-sphere
+          r (ray/ray (util/point 0 0 p) (util/ray-vector 0 1 0))
+          x-0 (ray/intersection (- p) shape)
+          x-1 (ray/intersection p shape)
+          xs [x-0 x-1]
+          comps (world/prepare-computations x-1 r xs)
+          reflectance (refraction/schlick comps)]
+      (is (aeq reflectance 1.0)))
+    )
+
+  (testing "The Schlick approximation with a perpendicular viewing angle"
+    (let [shape shape/glass-sphere
+          r (ray/ray (util/point 0 0 0) (util/ray-vector 0 1 0))
+          x-0 (ray/intersection -1.0 shape)
+          x-1 (ray/intersection 1 shape)
+          xs [x-0 x-1]
+          comps (world/prepare-computations x-1 r xs)
+          reflectance (refraction/schlick comps)]
+      (is (aeq reflectance 0.04)))
+    )
+
+  (testing "The Schlick approximation with small angle and n2 > n1"
+    (let [shape shape/glass-sphere
+          r (ray/ray (util/point 0 0.99 -2) (util/ray-vector 0 0 1))
+          x-0 (ray/intersection 1.8589 shape)
+          xs [x-0]
+          comps (world/prepare-computations x-0 r xs)
+          reflectance (refraction/schlick comps)]
+      (is (aeq reflectance 0.48873)))
+    )
+  )
